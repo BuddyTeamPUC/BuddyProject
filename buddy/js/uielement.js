@@ -273,3 +273,12 @@ class uielement_inputfield extends uielement
         this.updateAttr();
     }
 }
+
+class uielement_hyperlink extends uielement_h1
+{
+    constructor(parent, data, onDataChanged, style)
+    {
+        super(parent, data, onDataChanged, style);
+        console.log("Desenhar incone");
+    }
+}

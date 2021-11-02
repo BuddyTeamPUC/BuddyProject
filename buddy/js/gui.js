@@ -5,7 +5,9 @@ var currSubject = null;
 
 $( document ).ready(function()
 {
-    drawPage("middle_section", page_dashboard);
+    drawPage("middle_section", teste);
+    readtex
+    console.log();
 });
 
 function drawPage(parent, pageFunction)
@@ -15,6 +17,15 @@ function drawPage(parent, pageFunction)
     pageFunction();
     page_drawSideSection();
 }
+
+function page_drawSideSection()
+{
+    new uielement_rounded_button("side_section", "+ Criar");
+}
+
+// PEDRO
+
+// JULIA
 
 function page_dashboard()
 {
@@ -37,10 +48,9 @@ function page_dashboard()
     ]);
 }
 
-function page_drawSideSection()
-{
-    new uielement_rounded_button("side_section", "+ Criar");
-}
+// MILENA
+
+// GUILHERME
 
 function generateUUID() { // Public Domain/MIT
     var d = new Date().getTime();//Timestamp
