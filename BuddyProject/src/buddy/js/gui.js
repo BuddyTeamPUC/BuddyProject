@@ -2,10 +2,12 @@
 const subjects = [];
 var curTopic = null;
 var currSubject = null;
+var user = null;
 
 $( document ).ready(function()
 {
-    localStorage.setItem("user_test", '{"username":"pedro","email":"pedro@email.com","password":"123","materias":[{"id": 0,"nome":"aeds","assuntos":[{"id": 0,"nome": "somatorio","horas_estudadas": 48,"data": "2021-11-05"},{"id": 1,"nome": "ordenação","horas_estudadas": 12,"data": "2021-11-07"}]},{"id": 1,"nome":"AC I","assuntos":[{"id": 0,"nome": "Portas logicas","horas_estudadas": 28,"data": "2021-11-08"},{"id": 1,"nome": "Flip flop","horas_estudadas": 12,"data": "2021-11-07"}]},{"id": 2,"nome":"BD","assuntos":[{"id": 0,"nome": "Modelos de dados","horas_estudadas": 100,"data": "2021-11-06"},{"id": 1,"nome": "Introd. a banco de dados","horas_estudadas": 100,"data": "2021-11-08"}]}]}');
+    localStorage.setItem("user_test", '{"username":"Pedro","email":"pedro@email.com","password":"123","materias":[{"id": 0,"nome":"aeds","assuntos":[{"id": 0,"nome": "somatorio","horas_estudadas": 48,"data": "2021-11-05"},{"id": 1,"nome": "ordenação","horas_estudadas": 12,"data": "2021-11-07"}]},{"id": 1,"nome":"AC I","assuntos":[{"id": 0,"nome": "Portas logicas","horas_estudadas": 28,"data": "2021-11-08"},{"id": 1,"nome": "Flip flop","horas_estudadas": 12,"data": "2021-11-07"}]},{"id": 2,"nome":"BD","assuntos":[{"id": 0,"nome": "Modelos de dados","horas_estudadas": 100,"data": "2021-11-06"},{"id": 1,"nome": "Introd. a banco de dados","horas_estudadas": 100,"data": "2021-11-08"}]}]}');
+    user = localStorage.getItem("");
     drawPage("middle_section", page_dashboard);
     readtex
     console.log();
@@ -29,7 +31,6 @@ function page_dashboard()
     //abrindo json
     var data = localStorage.getItem("user_test");
     var user = JSON.parse(data);
-    
 
     //titulo da pagina
     new uielement_h1("middle_section", "Olá, "+ user.username, null, { 'margin_bottom': '-30px' });
