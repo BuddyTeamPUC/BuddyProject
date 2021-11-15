@@ -31,20 +31,22 @@ function page_dashboard()
     //abrindo json
     var data = localStorage.getItem("user_test");
     var user = JSON.parse(data);
+    
 
     //titulo da pagina
-    new uielement_h1("middle_section", "Olá, "+ user.username, null, { 'margin_bottom': '-30px' });
+    new uielement_h1("middle_section", "Olá, "+ user.username, null, { 'margin_bottom': '-2%' });
     new uielement_h2("middle_section", "Vai revisar alguma coisa hoje ?");
     
     //listar materias cadastradas
-    new uielement_rounded_button("side_section", "+ Criar");
-    new uielement_h1("side_section", "Matérias: ");
+    new uielement_h1("side_section", "Matérias: ", null, { 'margin_bottom': '-12%' });
     user.materias.forEach(el => {
-        new uielement_h3("side_section", el.nome);
+        new uielement_h3("side_section", el.nome, null, { 'margin_bottom': '-17%' });
     });
+    new uielement_rounded_button("side_section", "+ Materia", null, null, null, { 'margin_top': '10%' } );
+    
 
     //listar eventos cadastrados
-    new uielement_h1("side_section", "Eventos: ");
+    new uielement_h1("side_section", "Próximos eventos: ", null, { 'margin_bottom': '-12%', 'margin_top': '15%' });
     /* user.materias.forEach(el => {
         new uielement_h3("side_section", el.nome);
 
@@ -53,18 +55,20 @@ function page_dashboard()
         });
 
     }); */
-
+    new uielement_rounded_button("side_section", "+ Evento", null, null, null, { 'margin_top': '20%' } );
 
     //encontrar a data de hoje
     var hj = new Date();
     var dd = String(hj.getDate()).padStart(2, '0');
     var mm = String(hj.getMonth() + 1).padStart(2, '0'); //January is 0!
     var yyyy = hj.getFullYear();
-    hj = yyyy + "-" + mm + "-" + dd ;
+    var americano = yyyy + "-" + mm + "-" + dd ;
+    hj = {'ano':yyyy, 'mes':mm, 'dia':dd, 'americano':americano};
+
     
 
     //criar um array com todas as datas cadastradas sem repeticoes
-    var dates = [hj]; 
+    var dates = []; 
     user.materias.forEach(elM => {
         elM.assuntos.forEach(elA =>{
             var aux = false;
@@ -100,7 +104,7 @@ function page_dashboard()
         var americano, display;
         americano = elD;
 
-        if(hj.localeCompare(elD)==0){
+        if(hj.americano.localeCompare(elD)==0){
             display = "Hoje";
         }else if(mes == 1){
             display = "Jan. " + dia;
@@ -144,7 +148,7 @@ function page_dashboard()
             // Finding the smallest number in the subarray
             let min = i;
             for(let j = i+1; j < n; j++){
-                if(compareDates(dates, j, min) < 0) {
+                if(compareDates(dates[j], dates[min]) < 0) {
                     min=j; 
                 }
              }
@@ -158,18 +162,18 @@ function page_dashboard()
         return inputArr;
     }
 
-    function compareDates(array, i, j){
-        if(array[i].ano > array[j].ano){
+    function compareDates(i, j){
+        if(i.ano > j.ano){
             return 1;
-        }else if(array[i].ano == array[j].ano){
+        }else if(i.ano == j.ano){
 
-            if(array[i].mes > array[j].mes){
+            if(i.mes > j.mes){
                 return 1;
-            }else if(array[i].mes == array[j].mes){
+            }else if(i.mes == j.mes){
                 
-                if(array[i].dia > array[j].dia){
+                if(i.dia > j.dia){
                     return 1;
-                }else if(array[i].dia == array[j].dia){
+                }else if(i.dia == j.dia){
                     return 0;
                 }else{
                     return -1;
@@ -184,56 +188,167 @@ function page_dashboard()
         }
 
     }
-    
+
     //separa as datas passadas em um array diferente
-    separaDatas(dates, hj);
     var pastDates = [];
+    while(dates.length > 0 && compareDates(dates[0], hj) < 0){
+        var date = dates.shift(); 
+        pastDates.push(date);
+    }
+
     
-    function separaDatas(array, hj){
-        
-        while(array[0].americano.localeCompare(hj) < 0){
-            array.shift();
+    // display revisoes de hoje e futuras
+    if(dates.length > 0){
+        dates.forEach(date =>{
+            new uielement_h2("middle_section", date.display); 
+            
+            user.materias.forEach(materia =>{
+    
+                materia.assuntos.forEach(assunto =>{
+    
+                    if(assunto.data.localeCompare(date.americano)==0){
+                        
+                        new uielement_titled_subtitled_button("middle_section", materia.nome, assunto.nome, null, ()=> {  }); 
+                        
+                    }
+    
+                });
+    
+            });
+    
+        });
+    }else{
+        new uielement_h3("middle_section", "Não temos revisões futuras!");
+    }
+
+    // checa se um ano e bissexto ou nao
+    function isBissexto(ano){
+        if((ano % 4 == 0) && ((ano % 100 != 0) || (ano % 400 == 0))){
+            return true;
+        }else{
+            return false;
         }
     }
     
-    
-    
-    
-    dates.forEach(date =>{
-        new uielement_h2("middle_section", date.display); 
+    //display revisoes passadas
+    new uielement_h2("middle_section", "O que revisamos na última samana?", null, { 'margin_top': '60px', 'margin_bottom': '-10px'});
+    if(pastDates.length > 0){
         
-        user.materias.forEach(materia =>{
+        var marcaSemana;
+        if(dd > 7){
 
-            materia.assuntos.forEach(assunto =>{
+            americano = yyyy + '-' + mm + '-' + (dd - 7);
+            ano = yyyy;
+            mes = mm;
+            dia = dd - 7;
 
-                if(assunto.data.localeCompare(date.americano)==0){
-                    
-                    new uielement_titled_subtitled_button("middle_section", materia.nome, assunto.nome, null, ()=> {  }); 
-                    
+            marcaSemana = {'ano':ano, 'mes':mes, 'dia':dia, 'americano':americano};
+        }else{
+
+            if(mm == 1){// 31 dias
+                ano = yyyy - 1;
+                mes = 12;
+                dia = 31 + (dd - 7);
+
+                
+            }else if(mm == 2){// 28 ou 29 dias
+                ano = yyyy;
+                mes = mm -1;
+                dia = 31 + (dd - 7);
+                
+            }else if(mm == 3){// 31 dias
+                ano = yyyy;
+                mes = mm -1;
+                //levar em consideracao o ano bisexto
+                if(isBissexto(ano)==true){
+                    dia = 29 + (dd - 7); 
+                }else{
+                    dia = 28 + (dd - 7);
                 }
+                
+            }else if(mm == 4){// 30 dias
+                ano = yyyy;
+                mes = mm -1;
+                dia = 31 + (dd - 7);
+                
+            }else if(mm == 5){// 31 dias
+                ano = yyyy;
+                mes = mm -1;
+                dia = 30 + (dd - 7);
+                
+            }else if(mm == 6){// 30 dias
+                ano = yyyy;
+                mes = mm -1;
+                dia = 31 + (dd - 7);
+                
+            }else if(mm == 7){// 31 dias
+                ano = yyyy;
+                mes = mm -1;
+                dia = 30 + (dd - 7);
+                
+            }else if(mm == 8){// 31 dias
+                ano = yyyy;
+                mes = mm -1;
+                dia = 31 + (dd - 7);
+                
+            }else if(mm == 9){// 30 dias
+                ano = yyyy;
+                mes = mm -1;
+                dia = 31 + (dd - 7);
+                
+            }else if(mm == 10){// 31 dias
+                ano = yyyy;
+                mes = mm -1;
+                dia = 30 + (dd - 7);
+                
+            }else if(mm == 11){// 30 dias
+                ano = yyyy;
+                mes = mm -1;
+                dia = 31 + (dd - 7);
+                
+            }else if(mm == 12){// 31 dias
+                ano = yyyy;
+                mes = mm -1;
+                dia = 30 + (dd - 7);
+                
+            }
 
+            americano = ano + '-' + mes + '-' + dia;
+
+            marcaSemana = {'ano':ano, 'mes':mes, 'dia':dia, 'americano':americano};
+        }
+
+         
+        while(pastDates.length > 0 && compareDates(pastDates[0], marcaSemana) < 0){
+            pastDates.shift(); 
+        }
+
+        if(pastDates.length > 0){
+
+            pastDates.forEach(date =>{
+                new uielement_h2("middle_section", date.display); 
+                
+                user.materias.forEach(materia =>{
+        
+                    materia.assuntos.forEach(assunto =>{
+        
+                        if(assunto.data.localeCompare(date.americano)==0){        
+                            new uielement_titled_subtitled_button("middle_section", materia.nome, assunto.nome, null, ()=> {  }); 
+                        }
+                    });
+        
+                });
             });
+        }else{
+            new uielement_h3("middle_section", "Não fizemos revisões na última semana!");
+        }
 
-        });
+    }else{
+        new uielement_h3("middle_section", "Não temos revisões passadas!");
+    }
 
-    });
-    
-    
-    /* new uielement_h2("middle_section", "Hoje");
-    
-    display_horizontal("middle_section", 
-    [
-        new uielement_titled_subtitled_button("middle_section", "Aeds", "Somatório", null, ()=> {  }),
-        new uielement_titled_subtitled_button("middle_section", "Inglês", "To be", null, ()=> {  }),
-    ]);
-    
-    new uielement_h2("middle_section", "Out. 19");
-
-    display_horizontal("middle_section", 
-    [
-        new uielement_titled_subtitled_button("middle_section", "Aeds", "Lista e Pilha", null, ()=> { }),
-    ]); */
 }
+
 
 // MILENA
 
