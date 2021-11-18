@@ -6,9 +6,10 @@ var user = null;
 
 $( document ).ready(function()
 {
-    localStorage.setItem("user_test", '{"username": "pedro","email": "pedro@email.com","password": "123","materias": [{"id": 0,"nome": "aeds","descricao": "Umamateriachata","assuntos": [{"id": 0,"nome": "somatorio","horas_estudadas": 48,"data": "2021-11-11","link": [{"link_nome": "materia","link_hyperlink": "https://youtube.com.br"},{"link_nome": "materia","link_hyperlink": "https://youtube.com.br"},{"link_nome": "materia","link_hyperlink": "https://youtube.com.br"},{"link_nome": "materia","link_hyperlink": "https://youtube.com.br"}]},{"id": 1,"nome": "ordenação","horas_estudadas": 12,"data": "2021-11-03","link": [{"link_nome": "materia","link_hyperlink": "youtube.com.br"},{"link_nome": "materia","link_hyperlink": "youtube.com.br"},{"link_nome": "materia","link_hyperlink": "youtube.com.br"},{"link_nome": "materia","link_hyperlink": "youtube.com.br"}]}]},{"id": 1,"nome": "ACI","descricao": "Umamateriachata2","assuntos": [{"id": 0,"nome": "Portaslogicas","horas_estudadas": 28,"data": "2021-11-02","link": [{"link_nome": "materia","link_hyperlink": "youtube.com.br"},{"link_nome": "materia","link_hyperlink": "youtube.com.br"},{"link_nome": "materia","link_hyperlink": "youtube.com.br"},{"link_nome": "materia","link_hyperlink": "youtube.com.br"}]},{"id": 1,"nome": "Flipflop","horas_estudadas": 12,"data": "2021-11-05","link": [{"link_nome": "materia","link_hyperlink": "youtube.com.br"},{"link_nome": "materia","link_hyperlink": "youtube.com.br"},{"link_nome": "materia","link_hyperlink": "youtube.com.br"},{"link_nome": "materia","link_hyperlink": "youtube.com.br"}]}]},{"id": 2,"nome": "BD","assuntos": [{"id": 0,"nome": "Modelosdedados","descricao": "BDdescricao","horas_estudadas": 100,"data": "2021-11-05","link": [{"link_nome": "materia","link_hyperlink": "youtube.com.br"},{"link_nome": "materia","link_hyperlink": "youtube.com.br"},{"link_nome": "materia","link_hyperlink": "youtube.com.br"},{"link_nome": "materia","link_hyperlink": "youtube.com.br"}]},{"id": 1,"nome": "Introd.abancodedados","horas_estudadas": 100,"data": "2021-11-06","link": [{"link_nome": "materia","link_hyperlink": "youtube.com.br"},{"link_nome": "materia","link_hyperlink": "youtube.com.br"},{"link_nome": "materia","link_hyperlink": "youtube.com.br"},{"link_nome": "materia","link_hyperlink": "youtube.com.br"}]}]}]}');
+    localStorage.setItem("user_test", '{"username":"pedro","email":"pedro@email.com","password":"123","materias":[{"id":0,"nome":"aeds","descricao":"Umamateriachata","assuntos":[{"id":0,"nome":"somatorio","horas_estudadas":48,"data":"2021-11-11","link":[{"link_nome":"materia","link_hyperlink":"youtube.com.br"},{"link_nome":"materia","link_hyperlink":"youtube.com.br"},{"link_nome":"materia","link_hyperlink":"youtube.com.br"},{"link_nome":"materia","link_hyperlink":"youtube.com.br"}]},{"id":1,"nome":"ordenação","horas_estudadas":12,"data":"2021-11-11","link":[{"link_nome":"materia","link_hyperlink":"youtube.com.br"},{"link_nome":"materia","link_hyperlink":"youtube.com.br"},{"link_nome":"materia","link_hyperlink":"youtube.com.br"},{"link_nome":"materia","link_hyperlink":"youtube.com.br"}]}]},{"id":1,"nome":"ACI","descricao":"Umamateriachata2","assuntos":[{"id":0,"nome":"Portaslogicas","horas_estudadas":28,"data":"2021-11-19","link":[{"link_nome":"materia","link_hyperlink":"youtube.com.br"},{"link_nome":"materia","link_hyperlink":"youtube.com.br"},{"link_nome":"materia","link_hyperlink":"youtube.com.br"},{"link_nome":"materia","link_hyperlink":"youtube.com.br"}]},{"id":1,"nome":"Flipflop","horas_estudadas":12,"data":"2021-11-18","link":[{"link_nome":"materia","link_hyperlink":"youtube.com.br"},{"link_nome":"materia","link_hyperlink":"youtube.com.br"},{"link_nome":"materia","link_hyperlink":"youtube.com.br"},{"link_nome":"materia","link_hyperlink":"youtube.com.br"}]}]},{"id":2,"nome":"BD","assuntos":[{"id":0,"nome":"Modelosdedados","descricao":"BDdescricao","horas_estudadas":100,"data":"2021-11-05","link":[{"link_nome":"materia","link_hyperlink":"youtube.com.br"},{"link_nome":"materia","link_hyperlink":"youtube.com.br"},{"link_nome":"materia","link_hyperlink":"youtube.com.br"},{"link_nome":"materia","link_hyperlink":"youtube.com.br"}]},{"id":1,"nome":"Introd.abancodedados","horas_estudadas":100,"data":"2021-11-06","link":[{"link_nome":"materia","link_hyperlink":"youtube.com.br"},{"link_nome":"materia","link_hyperlink":"youtube.com.br"},{"link_nome":"materia","link_hyperlink":"youtube.com.br"},{"link_nome":"materia","link_hyperlink":"youtube.com.br"}]}]}]}');
     user = localStorage.getItem("user_test");
     drawPage("middle_section", page_dashboard);
+    console.log(user)
 
 });
 
@@ -16,6 +17,8 @@ function drawPage(parent, pageFunction)
 {
     $("."+parent).html("");
     $(".footer_section").html("");
+    $(".side_section").html("");
+    drawSideBar();
     pageFunction();
 }
 
@@ -30,20 +33,54 @@ function page_dashboard()
     var data = localStorage.getItem("user_test");
     var user = JSON.parse(data);
     
-
+    var materiasParaMostrar = [];
     //titulo da pagina
+    if(currSubject == null)
+    {
+    materiasParaMostrar = user.materias;
     new uielement_h1("middle_section", "Olá, "+ user.username, null, { 'margin_bottom': '-2%' });
     new uielement_h2("middle_section", "Vai revisar alguma coisa hoje ?");
+    }else{
+        materiasParaMostrar.push(currSubject);
+        new uielement_h1("middle_section", currSubject.nome);
+        new uielement_h2("middle_section", currSubject.descricao, null, { "margin_top" : "-30px" } );
+    }
     
-    //listar materias cadastradas
-    new uielement_h1("side_section", "Matérias: ", null, { 'margin_bottom': '-12%' });
-    user.materias.forEach(el => {
-        new uielement_h3("side_section", el.nome, null, { 'margin_bottom': '-17%' });
-    });
-    new uielement_rounded_button("side_section", "+ Materia", null, null, null, { 'margin_top': '10%' } );
+    
     
 
-    //listar eventos cadastrados
+    drawDashboard(materiasParaMostrar);
+}
+function drawSideBar(){
+    var data = localStorage.getItem("user_test");
+    var user = JSON.parse(data);
+
+    new uielement_h1("side_section", "Matérias: ", null, { 'margin_bottom': '-12%' });
+    user.materias.forEach(el => {
+        var h3 = new uielement_h3("side_section", el.nome, null, { 'margin_bottom': '-17%' });
+        h3.addEvent("mouseenter", ()=>{
+            h3.style = {
+                "text_decoration" : "underline", 
+                "cursor" : "pointer"
+            }
+            h3.setStyle()
+        })
+        h3.addEvent("mouseleave", ()=>{
+            h3.style = {
+                "text_decoration" : "none", 
+                "cursor" : "normal"
+            }
+            h3.setStyle()
+        })
+        h3.addEvent("click", ()=>{
+            currSubject = el
+            drawPage("middle_section", page_dashboard);
+        })
+    });
+    new uielement_rounded_button("side_section", "+ Materia", null, ()=>{
+        drawPage("middle_section", page_create);
+    }, null, { 'margin_top': '10%' } );
+     //listar materias cadastradas
     new uielement_h1("side_section", "Próximos eventos: ", null, { 'margin_bottom': '-12%', 'margin_top': '15%' });
     /* user.materias.forEach(el => {
         new uielement_h3("side_section", el.nome);
@@ -53,8 +90,124 @@ function page_dashboard()
         });
 
     }); */
-    new uielement_rounded_button("side_section", "+ Evento", null, null, null, { 'margin_top': '20%' } );
 
+    new uielement_rounded_button("side_section", "+ Evento", null, null, null, { 'margin_top': '20%' } );
+}
+
+// MILENA
+function page_create()
+{
+    new uielement_h1("middle_section", "Criar matéria", null, { 'margin_bottom': '10px' });
+
+        var nome_mat = new uielement_inputfield("middle_section", "Nome matéria", "", null, {'margin_bottom': ' 10px'} )
+        var descricao_mat = new uielement_inputfield("middle_section", "Descrição da matéria", "", null, {'margin_bottom': '20px'} )
+        new uielement_rounded_button("middle_section", "Confirmar", null,()=> { 
+            var novaMateria = {
+                "id" : 1, 
+                "nome" : nome_mat.data,
+                "descricao" : descricao_mat.data,
+                "assuntos" : []
+            }
+            currSubject = novaMateria;
+            drawPage("middle_section", page_subject)
+        });
+
+
+}
+function page_subject()
+{
+    new uielement_h1("middle_section", currSubject.nome);
+    new uielement_h2("middle_section", currSubject.descricao, null, { "margin_top" : "-30px" } );
+}
+// GUILHERME
+
+function page_topic(){
+    if(currSubject==null || curTopic == null){
+        drawPage("middle_section",page_dashboard);
+        return;
+    }
+    //título da página.
+
+    new uielement_h1("middle_section",curTopic.nome, null, { 'margin_bottom': '-30px'});
+    new uielement_h2("middle_section", currSubject.nome);
+
+    
+    //Links úteis:
+    if(curTopic.link.length>0){
+    new uielement_h2("middle_section","Links úteis:",null,);
+    new uielement_rounded_button("footer_section", "+ Links",null,()=>{
+        drawPage("middle_section",page_addlink);
+    },null,{'margin_left': '90%','margin_top': '-1%'});
+    console.log(curTopic.link);
+    curTopic.link.forEach(l =>{
+        new uielement_h3_hyperlink("middle_section",l.link_nome,null,l.link_hyperlink);
+    });
+    }
+    else{
+        new uielement_h3("middle_section", "Nenhum link cadastrado");
+        var adicionar = new uielement_h3("middle_section", "Adicionar ", null, { "margin_top": "-15px" });
+
+    adicionar.addEvent("mouseenter",()=>
+    {
+        adicionar.style = 
+        {
+            "margin_top": "-15px",
+            "text_decoration": "underline",
+            "cursor": "pointer"
+        }
+
+        adicionar.setStyle();
+    });
+
+    adicionar.addEvent("mouseleave", ()=>
+    {
+        adicionar.style = 
+        {
+            "margin_top": "-15px",
+            "text_decoration": "none",
+            "cursor": "normal"
+        }
+
+        adicionar.setStyle();
+    });
+
+    adicionar.addEvent("click", ()=>
+    {
+       drawPage("middle_section",page_addlink); 
+    });
+    }
+
+
+    
+
+}
+function page_addlink(){
+    new uielement_h1("middle_section",currSubject.nome+ " : " + curTopic.nome );
+    var titulo = new uielement_inputfield("middle_section","Título","");
+    var link = new uielement_inputfield("middle_section","Link","");
+    new uielement_rounded_button("middle_section","Adicionar",null,()=>{
+        drawPage("middle_section",page_topic);
+
+    });
+}
+
+function generateUUID() { // Public Domain/MIT
+    var d = new Date().getTime();//Timestamp
+    var d2 = (performance && performance.now && (performance.now()*1000)) || 0;//Time in microseconds since page-load or 0 if unsupported
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+        var r = Math.random() * 16;//random number between 0 and 16
+        if(d > 0){//Use timestamp until depleted
+            r = (d + r)%16 | 0;
+            d = Math.floor(d/16);
+        } else {//Use microseconds since page-load if supported
+            r = (d2 + r)%16 | 0;
+            d2 = Math.floor(d2/16);
+        }
+        return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
+    });
+}
+
+function drawDashboard(materias){
     //encontrar a data de hoje
     var hj = new Date();
     var dd = String(hj.getDate()).padStart(2, '0');
@@ -67,7 +220,7 @@ function page_dashboard()
 
     //criar um array com todas as datas cadastradas sem repeticoes
     var dates = []; 
-    user.materias.forEach(elM => {
+    materias.forEach(elM => {
         elM.assuntos.forEach(elA =>{
             var aux = false;
             dates.forEach(elD =>{
@@ -200,7 +353,7 @@ function page_dashboard()
         dates.forEach(date =>{
             new uielement_h2("middle_section", date.display); 
             
-            user.materias.forEach(materia =>{
+            materias.forEach(materia =>{
     
                 materia.assuntos.forEach(assunto =>{
     
@@ -209,8 +362,8 @@ function page_dashboard()
                         new uielement_titled_subtitled_button("middle_section", materia.nome, assunto.nome, null, ()=> { 
                             currSubject = materia;
                             curTopic = assunto;
-                            drawPage("middle_section",page_topic);
-                         }); 
+                            drawPage("middle_section", page_topic);
+                        }); 
                         
                     }
     
@@ -330,20 +483,25 @@ function page_dashboard()
             pastDates.forEach(date =>{
                 new uielement_h2("middle_section", date.display); 
                 
-                user.materias.forEach(materia =>{
-        
+                var _materias = [];
+
+                materias.forEach(materia =>{
+                    
+
                     materia.assuntos.forEach(assunto =>{
         
                         if(assunto.data.localeCompare(date.americano)==0){        
-                            new uielement_titled_subtitled_button("middle_section", materia.nome, assunto.nome, null, ()=> { 
+                            _materias.push(new uielement_titled_subtitled_button("middle_section", materia.nome, assunto.nome, null, ()=> {
                                 currSubject = materia;
                                 curTopic = assunto;
-                                drawPage("middle_section",page_topic);
-                             }); 
+                                drawPage("middle_section", page_topic);
+                            })); 
                         }
                     });
-        
+
+                    
                 });
+                display_horizontal("middle_section", _materias);
             });
         }else{
             new uielement_h3("middle_section", "Não fizemos revisões na última semana!");
@@ -353,95 +511,4 @@ function page_dashboard()
         new uielement_h3("middle_section", "Não temos revisões passadas!");
     }
 
-}
-
-
-// MILENA
-
-// GUILHERME
-
-function page_topic(){
-    if(currSubject==null || curTopic == null){
-        drawPage("middle_section",page_dashboard);
-        return;
-    }
-    //título da página.
-
-    new uielement_h1("middle_section",curTopic.nome, null, { 'margin_bottom': '-30px'});
-    new uielement_h2("middle_section", currSubject.nome);
-
-    
-    //Links úteis:
-    if(curTopic.link.length>0){
-    new uielement_h2("middle_section","Links úteis:",null,);
-    new uielement_rounded_button("footer_section", "+ Links",null,()=>{
-        drawPage("middle_section",page_addlink);
-    },null,{'margin_left': '90%','margin_top': '-1%'});
-    console.log(curTopic.link);
-    curTopic.link.forEach(l =>{
-        new uielement_h3_hyperlink("middle_section",l.link_nome,null,l.link_hyperlink);
-    });
-    }
-    else{
-        new uielement_h3("middle_section", "Nenhum link cadastrado");
-        var adicionar = new uielement_h3("middle_section", "Adicionar ", null, { "margin_top": "-15px" });
-
-    adicionar.addEvent("mouseenter",()=>
-    {
-        adicionar.style = 
-        {
-            "margin_top": "-15px",
-            "text_decoration": "underline",
-            "cursor": "pointer"
-        }
-
-        adicionar.setStyle();
-    });
-
-    adicionar.addEvent("mouseleave", ()=>
-    {
-        adicionar.style = 
-        {
-            "margin_top": "-15px",
-            "text_decoration": "none",
-            "cursor": "normal"
-        }
-
-        adicionar.setStyle();
-    });
-
-    adicionar.addEvent("click", ()=>
-    {
-       drawPage("middle_section",page_addlink); 
-    });
-    }
-
-
-    
-
-}
-function page_addlink(){
-    new uielement_h1("middle_section",currSubject.nome+ " : " + curTopic.nome );
-    var titulo = new uielement_inputfield("middle_section","Título","");
-    var link = new uielement_inputfield("middle_section","Link","");
-    new uielement_rounded_button("middle_section","Adicionar",null,()=>{
-        drawPage("middle_section",page_topic);
-
-    });
-}
-
-function generateUUID() { // Public Domain/MIT
-    var d = new Date().getTime();//Timestamp
-    var d2 = (performance && performance.now && (performance.now()*1000)) || 0;//Time in microseconds since page-load or 0 if unsupported
-    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-        var r = Math.random() * 16;//random number between 0 and 16
-        if(d > 0){//Use timestamp until depleted
-            r = (d + r)%16 | 0;
-            d = Math.floor(d/16);
-        } else {//Use microseconds since page-load if supported
-            r = (d2 + r)%16 | 0;
-            d2 = Math.floor(d2/16);
-        }
-        return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
-    });
 }
