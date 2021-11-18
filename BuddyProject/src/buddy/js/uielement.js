@@ -89,8 +89,11 @@ class uielement
         $("."+this.id).css("color", this.style.font_color);
 
         $("."+this.id).css("font-weight", this.style.font_weight);
-        
+
+        $("."+this.id).css("text-decoration", this.style.text_decoration);
+
         $("."+this.id).css("transition", this.style.transition);
+    
 
         $("."+this.id).css("transform", this.style.transform);
         
@@ -280,5 +283,42 @@ class uielement_hyperlink extends uielement_h1
     {
         super(parent, data, onDataChanged, style);
         console.log("Desenhar incone");
+    }
+}
+
+class uielement_h3_hyperlink extends uielement_h3
+{
+    constructor(parent, data, onDataChanged,link, style)
+    {
+        
+        super(parent,data,onDataChanged,style);
+        this.style={"font_color" : "blue"};
+        this.setStyle();   
+        this.link = link;
+        this.addEvent("click",()=>{
+            window.open(this.link);
+        });
+        this.addEvent("mouseenter",()=>{
+            this.style={
+                "cursor" : "pointer",
+                "font_color" : "blue",
+                "text_decoration" : "underline",
+            }
+            this.setStyle();
+        })
+        this.addEvent("mouseleave",()=>{
+            this.style={
+                "cursor" : "normal",
+                "font_color" : "blue",
+                "text_decoration" : "none",
+            }
+            this.setStyle();
+        })
+        
+    }
+    draw(data){
+        super.draw(data);
+        this.addAttribute("style","display : inline-block");
+        $("."+ this.id).append("<img src='../buddy/img/external_link_icon.svg' width= 18px style= 'padding-left : 4px; margin-top : 50px'>");
     }
 }
