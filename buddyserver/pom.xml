@@ -5,4 +5,11 @@
   <version>0.0.1-SNAPSHOT</version>
   <name>buddy_server</name>
   <description>A server for buddy</description>
+  <dependencies>
+  	<dependency>
+    <groupId>mysql</groupId>
+    <artifactId>mysql-connector-java</artifactId>
+    <version>8.0.27</version>
+</dependency>
+  </dependencies>
 </project>

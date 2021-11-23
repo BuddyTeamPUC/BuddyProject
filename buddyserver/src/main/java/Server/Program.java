@@ -1,15 +1,17 @@
 package Server;
 
-import java.io.IOException;
-
-import DB.*;
-import DB.entities.*;
-
 public class Program {
 
-	public static void main(String[] args) throws IOException {
+	public static void main(String[] args) {
 		
-		ServerObject server = new ServerObject(8000);
-		server.Start();
+		ServerObject server = new ServerObject(8080);
+		try {
+			server.Run();
+		}
+		catch(Exception e) 
+		{
+			System.out.println(e);
+		}
+		
 	}
 }

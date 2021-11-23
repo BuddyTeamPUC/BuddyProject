@@ -92,7 +92,7 @@ function page_register()
         var url = baseFecthUrl("register?name="+nome.data+"&sobrenome="+sobrenome.data+"&email="+email.data+"&pass="+pass.data);
         console.log(url);
         fetch(url)
-        drawDashboard("middle_section", page_login);
+        // drawDashboard("middle_section", page_login);
     });
 }
 
@@ -595,7 +595,7 @@ function drawDashboard(materias){
 
 function baseFecthUrl(path)
 {
-    return (!isLive) ? "http://localhost:8000/" + path : ""; 
+    return (!isLive) ? "http://localhost:8080/" + path : ""; 
 }
 
 function isEmpty(str) {
