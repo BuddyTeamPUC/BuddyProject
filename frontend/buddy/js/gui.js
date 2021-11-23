@@ -3,11 +3,10 @@ const subjects = [];
 var curTopic = null;
 var currSubject = null;
 var user = null;
+var isLive = false;
 
 $( document ).ready(function()
 {
-    localStorage.setItem("user_test", '{"username":"pedro","email":"pedro@email.com","password":"123","materias":[{"id":0,"nome":"aeds","descricao":"Umamateriachata","assuntos":[{"id":0,"nome":"somatorio","horas_estudadas":48,"data":"2021-11-11","link":[{"link_nome":"materia","link_hyperlink":"youtube.com.br"},{"link_nome":"materia","link_hyperlink":"youtube.com.br"},{"link_nome":"materia","link_hyperlink":"youtube.com.br"},{"link_nome":"materia","link_hyperlink":"youtube.com.br"}]},{"id":1,"nome":"ordenação","horas_estudadas":12,"data":"2021-11-11","link":[{"link_nome":"materia","link_hyperlink":"youtube.com.br"},{"link_nome":"materia","link_hyperlink":"youtube.com.br"},{"link_nome":"materia","link_hyperlink":"youtube.com.br"},{"link_nome":"materia","link_hyperlink":"youtube.com.br"}]}]},{"id":1,"nome":"ACI","descricao":"Umamateriachata2","assuntos":[{"id":0,"nome":"Portaslogicas","horas_estudadas":28,"data":"2021-11-19","link":[{"link_nome":"materia","link_hyperlink":"youtube.com.br"},{"link_nome":"materia","link_hyperlink":"youtube.com.br"},{"link_nome":"materia","link_hyperlink":"youtube.com.br"},{"link_nome":"materia","link_hyperlink":"youtube.com.br"}]},{"id":1,"nome":"Flipflop","horas_estudadas":12,"data":"2021-11-18","link":[{"link_nome":"materia","link_hyperlink":"youtube.com.br"},{"link_nome":"materia","link_hyperlink":"youtube.com.br"},{"link_nome":"materia","link_hyperlink":"youtube.com.br"},{"link_nome":"materia","link_hyperlink":"youtube.com.br"}]}]},{"id":2,"nome":"BD","assuntos":[{"id":0,"nome":"Modelosdedados","descricao":"BDdescricao","horas_estudadas":100,"data":"2021-11-05","link":[{"link_nome":"materia","link_hyperlink":"youtube.com.br"},{"link_nome":"materia","link_hyperlink":"youtube.com.br"},{"link_nome":"materia","link_hyperlink":"youtube.com.br"},{"link_nome":"materia","link_hyperlink":"youtube.com.br"}]},{"id":1,"nome":"Introd.abancodedados","horas_estudadas":100,"data":"2021-11-06","link":[{"link_nome":"materia","link_hyperlink":"youtube.com.br"},{"link_nome":"materia","link_hyperlink":"youtube.com.br"},{"link_nome":"materia","link_hyperlink":"youtube.com.br"},{"link_nome":"materia","link_hyperlink":"youtube.com.br"}]}]}]}');
-    user = localStorage.getItem("user_test");
     drawPage("middle_section", page_dashboard);
     console.log(user)
 
@@ -25,14 +24,91 @@ function drawPage(parent, pageFunction)
 
 // PEDRO
 
+function page_login()
+{
+    new uielement_h1("middle_section", "Login");
+    new uielement_inputfield("middle_section", "email", "");
+    new uielement_inputfield("middle_section", "senha", "");
+
+    new uielement_h2("middle_section", "Não tem uma conta ?", null, { "margin_top": "45px", "margin_bottom": "-20px" });
+    var criar = new uielement_h3("middle_section", "cirar", null);
+ 
+    criar.addEvent("mouseenter", ()=>
+    {
+        criar.style = 
+        {
+            "text_decoration" : "underline",
+            "cursor" : "pointer"
+        }
+
+        criar.setStyle();
+    });
+
+    criar.addEvent("mouseleave", ()=>
+    {
+        criar.style =
+        {
+            "text_decoration" : "none",
+            "cursor" : "normal"
+        }
+
+        criar.setStyle();
+    });
+
+    criar.addEvent("click", ()=>
+    {
+        drawPage("middle_section", page_register);
+    });
+}
+
+function page_register()
+{
+    new uielement_h1("middle_section", "Login");
+
+    var nome = new uielement_inputfield("middle_section", "nome", "");
+    var sobrenome = new uielement_inputfield("middle_section", "sobrenome", "");
+    var email = new uielement_inputfield("middle_section", "email", "");
+    var pass = new uielement_inputfield("middle_section", "senha", "");
+    var confirmpass = new uielement_inputfield("middle_section", "confirmar senha", "");
+
+    pass.addAttribute("type", "password");
+    confirmpass.addAttribute("type", "password");
+
+    new uielement_rounded_button("middle_section", "Criar !", null ,()=>
+    {
+
+        if(isEmpty(nome.data) || isEmpty(sobrenome) || isEmpty(email) || isEmpty(pass) || isEmpty(confirmpass))
+        {
+            alert("Preencha todos os campos !");
+            return;
+        }
+
+        if(pass.data != confirmpass.data)
+        {
+            alert("Certifique-se de que preencheu a senha certa");
+            return;
+        }
+
+        var url = baseFecthUrl("register?name="+nome.data+"&sobrenome="+sobrenome.data+"&email="+email.data+"&pass="+pass.data);
+        console.log(url);
+        fetch(url)
+        drawDashboard("middle_section", page_login);
+    });
+}
+
 // JULIA
 
 function page_dashboard()
 {
-    //abrindo json
-    var data = localStorage.getItem("user_test");
-    var user = JSON.parse(data);
     
+    //Antes de desenhar a dashboard o site precisa sertificar de que o usuário está carregado.
+    if(!user)
+    {
+        drawPage("middle_section", page_login);
+        return;
+    }
+
+    //abrindo json
     var materiasParaMostrar = [];
     //titulo da pagina
     if(currSubject == null)
@@ -51,9 +127,13 @@ function page_dashboard()
 
     drawDashboard(materiasParaMostrar);
 }
-function drawSideBar(){
-    var data = localStorage.getItem("user_test");
-    var user = JSON.parse(data);
+function drawSideBar()
+{
+
+    if(!user)
+    {
+        return;
+    }
 
     new uielement_h1("side_section", "Matérias: ", null, { 'margin_bottom': '-12%' });
     user.materias.forEach(el => {
@@ -511,4 +591,13 @@ function drawDashboard(materias){
         new uielement_h3("middle_section", "Não temos revisões passadas!");
     }
 
+}
+
+function baseFecthUrl(path)
+{
+    return (!isLive) ? "http://localhost:8080/" + path : ""; 
+}
+
+function isEmpty(str) {
+    return (!str || str.length === 0 );
 }
