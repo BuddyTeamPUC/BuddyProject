@@ -595,7 +595,7 @@ function drawDashboard(materias){
 
 function baseFecthUrl(path)
 {
-    return (!isLive) ? "http://localhost:8080/" + path : ""; 
+    return (!isLive) ? "http://localhost:8000/" + path : ""; 
 }
 
 function isEmpty(str) {

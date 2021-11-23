@@ -1,0 +1,179 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400&display=swap');
+
+body
+{
+    background-color: white;
+    display: inline-flex;
+    margin: 0px;
+    width: 100%;
+}
+
+footer
+{
+    position: fixed;
+    height: 100px;
+    width: 100%;
+    bottom: 0;
+    z-index: 100;
+}
+
+.side_section
+{
+    position: fixed;
+    display: block;
+    width: 200px;
+    height: 100vh;
+    z-index: 99;
+    padding-left: 15px;
+    box-shadow: 2px 0px 5px rgba(0, 0, 0, .1);
+}
+
+.middle_section
+{
+    display: block;
+    width: 84%;
+    margin: 10px;
+    margin-left: 220px;
+    padding-left: 25px;
+}
+
+.item
+{
+    width: 100%;
+    min-height: 50px;
+    margin-top: 10px;
+    font-family: Roboto;
+}
+
+h1
+{
+    font-size: 30px;
+    font-weight: 400;
+}
+
+h2
+{
+    font-size: 25px;
+    font-weight: 300;
+}
+
+h3
+{
+    font-size: 20px;
+    font-weight: 300;
+}
+
+p
+{
+    padding-top: 10px;
+    font-weight: 100;
+    text-align: justify;
+}
+
+input[type=text], input[type=password]
+{
+    height: 10px;
+    min-width: 350px;
+    border: none;
+    border-bottom: 2px solid #008a5e;
+    padding-top: 35px;
+    padding-bottom: 5px;
+    background-color: #fafafa;
+    font-size: 18px;
+    transition: all, .2s;
+}
+
+input[type=text]:focus
+{
+    border-bottom: 5px solid #008a5e;
+    outline: none;
+}
+
+input[type=password]:focus
+{
+    border-bottom: 5px solid #008a5e;
+    outline: none;
+}
+
+input[type=file]
+{
+    display: none;
+}
+
+.subjects ul li
+{
+    list-style: none;
+    display: inline-block;
+}
+
+.fix_top
+{
+    margin-top: 0px;
+}
+
+.fontsize_mediumsmall
+{
+    font-size: 18px;
+}
+
+.fontsize_medium
+{
+    font-size: 20px;
+}
+
+.titled_subtitled_button
+{
+    padding: 0px;
+    min-height: 80px;
+    max-height: 90px;
+    min-width: 150px;
+    max-width: 180px;
+    padding: 2px;
+    border: none;
+    border-radius: 25px;
+    background-color: white;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, .2);
+    transition: all, .2s;
+}
+
+.titled_subtitled_button h2
+{
+    font-size: 20px;
+}
+
+.titled_subtitled_button h3
+{
+    font-size: 15px;
+}
+
+.titled_subtitled_button h2, .titled_subtitled_button h3
+{
+    margin: 0px;
+    color: #0030ff;
+}
+
+.titled_subtitled_button:hover, .rounded_button:hover
+{
+    transform: scale(1.05, 1.05);
+}
+
+.titled_subtitled_button:focus
+{
+    transform: scale(1, 1);
+}
+
+.rounded_button
+{
+    padding: 0px;
+    min-height: 80px;
+    max-height: 90px;
+    min-width: 150px;
+    max-width: 180px;
+    padding: 2px;
+    border: none;
+    border-radius: 50px;
+    color: #008a5e;
+    background-color: white;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, .2);
+    transition: all, .2s;
+}
