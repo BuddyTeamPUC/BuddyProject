@@ -56,7 +56,6 @@ public class DAO {
 		{
 			Statement st = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
 			ResultSet rs = st.executeQuery("SELECT * FROM estudante");
-			System.out.println("Fetching query...");
 			if(rs.next()) 
 			{
 				rs.last();
@@ -78,6 +77,35 @@ public class DAO {
 		return estudantes;
 	}
 	
+	public Materia[] GetMaterias(int estudanteId)
+	{
+		Materia[] materias = null;
+		
+		try 
+		{
+			Statement st = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+			ResultSet rs = st.executeQuery("SELECT * FROM materia WHERE id = " + estudanteId);
+			if(rs.next()) 
+			{
+				rs.last();
+				materias = new Materia[rs.getRow()];
+				rs.beforeFirst();
+				
+				for(int i = 0; rs.next(); i++) 
+				{
+					materias[i] = new Materia(rs.getInt("id"), rs.getString("nome"), estudanteId);
+				}
+			}
+			System.out.println("Returnin with " + materias.length + " datas...");
+			st.close();
+		}catch(Exception e) 
+		{
+			System.err.println(e.getMessage());
+		}
+		
+		return materias;
+	}
+	
 	public Estudante GetEstudante(int id) 
 	{
 		Estudante estudante = null;
@@ -86,10 +114,51 @@ public class DAO {
 		{
 			Statement st = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
 			ResultSet rs = st.executeQuery("SELECT * FROM estudante WHERE id = " + id);
-			System.out.println("Fetching query...");
 			if(rs.next()) 
 			{
 				estudante = new Estudante(id, rs.getString("nome"), rs.getString("sobrenome"), rs.getString("senha"), rs.getString("email"));
+			}
+			st.close();
+		}catch(Exception e) 
+		{
+			System.err.println(e.getMessage());
+		}
+		
+		return estudante;
+	}
+	
+	public Estudante GetEstudante(String email) 
+	{
+		Estudante estudante = null;
+		
+		try 
+		{
+			Statement st = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+			ResultSet rs = st.executeQuery("SELECT * FROM estudante WHERE email = '" + email + "'");
+			if(rs.next()) 
+			{
+				estudante = new Estudante(rs.getInt("id"), rs.getString("nome"), rs.getString("sobrenome"), rs.getString("senha"), email);
+			}
+			st.close();
+		}catch(Exception e) 
+		{
+			System.err.println(e.getMessage());
+		}
+		
+		return estudante;
+	}
+	
+	public Estudante GetEstudante(String email, String pass) 
+	{
+		Estudante estudante = null;
+		
+		try 
+		{
+			Statement st = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+			ResultSet rs = st.executeQuery("SELECT * FROM estudante WHERE email = '" + email + "' AND senha = '"+pass+"'");
+			if(rs.next()) 
+			{
+				estudante = new Estudante(rs.getInt("id"), rs.getString("nome"), rs.getString("sobrenome"), pass, email);
 			}
 			st.close();
 		}catch(Exception e) 

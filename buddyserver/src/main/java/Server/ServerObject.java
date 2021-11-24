@@ -7,7 +7,8 @@ import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-import Server.Communication.RegisterRequest;
+import Server.Communication.*;
+import Server.Communication.Result.*;
 
 public class ServerObject {
 	int port;
@@ -59,6 +60,7 @@ public class ServerObject {
 	{
 		OutputStream clientOutput = client.getOutputStream();
 		clientOutput.write(("HTTP/1.1 200 OK\r\n").getBytes());
+		clientOutput.write(("Content-Type: text/json\r\n").getBytes());
 		clientOutput.write(("Access-Control-Allow-Origin: *\r\n").getBytes());
 		clientOutput.write(("\r\n").getBytes());
 		clientOutput.write((data+"\r\n").getBytes());
@@ -71,20 +73,24 @@ public class ServerObject {
 		if(request.contains("/register")) 
 		{
 			RegisterRequest registerRequest = new RegisterRequest(request);
-			if(registerRequest.ProcessRequest()) 
-			{
-				System.out.println("Request processed successfully");
-				Write(client, Ok());
-			}
+			CommunicationResult result = registerRequest.ProcessRequest();
+			Write(client, result.GetJson());
+		}
+		else if(request.contains("/login")) 
+		{
+			LoginRequest loginRequest = new LoginRequest(request);
+			CommunicationResult result = loginRequest.ProcessRequest();
+			Write(client, result.GetJson());
+		}
+		else if(request.contains("/materiais")) 
+		{
+			MateriaisRequest materiaisRequest = new MateriaisRequest(request);
+			CommunicationResult result = materiaisRequest.ProcessRequest();
+			Write(client, result.GetJson());
 		}
 		else 
 		{
 			System.out.println("Invalid request: " + request);
 		}
-	}
-	
-	String Ok() 
-	{
-		return "{\"response\" : \"OK\"}";
 	}
 }

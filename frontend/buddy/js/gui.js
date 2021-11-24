@@ -27,8 +27,40 @@ function drawPage(parent, pageFunction)
 function page_login()
 {
     new uielement_h1("middle_section", "Login");
-    new uielement_inputfield("middle_section", "email", "");
-    new uielement_inputfield("middle_section", "senha", "");
+    var email = new uielement_inputfield("middle_section", "email", "");
+    var pass = new uielement_inputfield("middle_section", "senha", "");
+
+    pass.addAttribute("type", "password");
+
+    new uielement_rounded_button("middle_section", "Login", null, ()=>
+    {
+        console.log(baseFecthUrl("login?username="+email.data+"&pass="+pass.data));
+        fetch(baseFecthUrl("login?username="+email.data+"&pass="+pass.data))
+        .then(response => response.json())
+        .then(userData =>
+        {
+
+            if(!userData.status)
+            {
+                alert(userData.message);
+                return;
+            }
+
+            user = { credentials: userData.data };
+            
+            fetch(baseFecthUrl("materiais?id="+userData.data.id))
+            .then(materiaisResponse => materiaisResponse.json())
+            .then(subjectData => 
+            {
+                user.materias = subjectData.data;
+                user.materias.forEach(materia => {
+                    
+                });
+                console.log(user);
+                drawPage("middle_section", page_dashboard);
+            })
+        })
+    });
 
     new uielement_h2("middle_section", "Não tem uma conta ?", null, { "margin_top": "45px", "margin_bottom": "-20px" });
     var criar = new uielement_h3("middle_section", "cirar", null);
@@ -83,6 +115,12 @@ function page_register()
             return;
         }
 
+        if(!email.data.includes("@") || !email.data.includes(".com"))
+        {
+            alert("Preencha um email válido");
+            return;
+        }
+
         if(pass.data != confirmpass.data)
         {
             alert("Certifique-se de que preencheu a senha certa");
@@ -92,6 +130,18 @@ function page_register()
         var url = baseFecthUrl("register?name="+nome.data+"&sobrenome="+sobrenome.data+"&email="+email.data+"&pass="+pass.data);
         console.log(url);
         fetch(url)
+        .then(json => json.json())
+        .then(final => 
+        {
+            console.log(final);
+            if(!final.status)
+            {
+                alert(final.message);
+                return;
+            }
+
+            drawPage("middle_section", page_login);
+        });
         // drawDashboard("middle_section", page_login);
     });
 }
@@ -114,7 +164,7 @@ function page_dashboard()
     if(currSubject == null)
     {
     materiasParaMostrar = user.materias;
-    new uielement_h1("middle_section", "Olá, "+ user.username, null, { 'margin_bottom': '-2%' });
+    new uielement_h1("middle_section", "Olá, "+ user.credentials.nome, null, { 'margin_bottom': '-2%' });
     new uielement_h2("middle_section", "Vai revisar alguma coisa hoje ?");
     }else{
         materiasParaMostrar.push(currSubject);

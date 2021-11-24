@@ -2,6 +2,7 @@ package Server.Communication;
 
 import DB.*;
 import DB.entities.Estudante;
+import Server.Communication.Result.CommunicationResult;
 
 public class RegisterRequest extends BaseRequest{
 
@@ -22,21 +23,32 @@ public class RegisterRequest extends BaseRequest{
 		pass = infos[3].split("=")[1];
 	}
 	
-	public boolean ProcessRequest() 
+	public CommunicationResult ProcessRequest() 
 	{
 		DAO dao = new DAO();
 		try 
 		{
 			dao.Start(new ConnectionSettings("localhost", "buddy", 3306, "root", "Fh$tudi0123"));
-			int id = dao.GetEstudantes().length;
+			 
+			Estudante estudante = dao.GetEstudante(email);
+			
+			if(estudante != null) 
+			{
+				return new CommunicationResult(false, "Email already taken", "");
+			}
+			
+			Estudante[] estudantes = dao.GetEstudantes();
+			
+			int id = estudantes != null && estudantes.length > 0 ? estudantes.length : 0;
+			
 			dao.Insert(new Estudante(id, name, lastName, pass, email));
 			dao.Close();
-			return true;
+			return new CommunicationResult(true, "Register process complete", "");
 		}
 		catch(Exception e) 
 		{
 			System.out.println("RegisterRequest: " + e.getMessage());
-			return false;
+			return new CommunicationResult(false, e.getMessage(), "");
 		}
 	}
 }

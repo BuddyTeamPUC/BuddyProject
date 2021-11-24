@@ -60,6 +60,11 @@ public class Estudante extends BaseEntity {
 	{
 		return "INSERT INTO "+ GetTable() + " (id, nome, sobrenome, senha, email) VALUES (" + id +  ",'" + nome + "','" + sobrenome + "','" + senha + "', '" + email + "')";
 	}
+	
+	public String GetJson() 
+	{
+		return "{ \"id\": "+id+", \"nome\": \""+nome+"\", \"sobrenome\": \""+sobrenome+"\", \"email\": \""+email+"\", \"pass\": \""+senha+"\" }";
+	}
 }
 
 

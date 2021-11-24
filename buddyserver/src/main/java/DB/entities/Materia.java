@@ -40,6 +40,11 @@ public class Materia extends BaseEntity {
 	
 	public String Insert() 
 	{
-		return "INSERT INTO " + GetTable() + "(" + id +  "," + nome + "," + estudante_id + ") VALUES ('"+id+"','"+nome+"','"+estudante_id+"')";
+		return "INSERT INTO " + GetTable() + "(id, nome, estudante_id) VALUES ('"+id+"','"+nome+"','"+estudante_id+"')";
+	}
+	
+	public String GetJson() 
+	{
+		return "{ \"id\": "+id+", \"nome\": \""+nome+"\", \"estudante_id\": "+estudante_id+" }";
 	}
 }

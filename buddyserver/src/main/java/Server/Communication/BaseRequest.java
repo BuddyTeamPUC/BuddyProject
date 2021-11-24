@@ -1,5 +1,7 @@
 package Server.Communication;
 
+import Server.Communication.Result.CommunicationResult;
+
 public abstract class BaseRequest {
 	
 	String requestString;
@@ -9,5 +11,5 @@ public abstract class BaseRequest {
 		this.requestString = requestString;
 	}
 	
-	public abstract boolean ProcessRequest();
+	public abstract CommunicationResult ProcessRequest();
 }
