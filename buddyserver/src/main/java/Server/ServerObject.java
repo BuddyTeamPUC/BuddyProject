@@ -94,6 +94,12 @@ public class ServerObject {
 			CommunicationResult result = topicsRequest.ProcessRequest();
 			Write(client, result.GetJson());
 		}
+		else if(request.contains("/addmateria")) 
+		{
+			CreateTopicRequest createTopicRequest = new CreateTopicRequest(request);
+			CommunicationResult result = createTopicRequest.ProcessRequest();
+			Write(client, result.GetJson());
+		}
 		else 
 		{
 			System.out.println("Invalid request: " + request);

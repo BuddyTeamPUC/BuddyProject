@@ -245,13 +245,14 @@ function page_create()
         var descricao_mat = new uielement_inputfield("middle_section", "Descrição da matéria", "", null, {'margin_bottom': '20px'} )
         new uielement_rounded_button("middle_section", "Confirmar", null,()=> { 
             var novaMateria = {
-                "id" : 1, 
+                "id" : 10, 
                 "nome" : nome_mat.data,
                 "descricao" : descricao_mat.data,
                 "assuntos" : []
             }
             currSubject = novaMateria;
-            drawPage("middle_section", page_subject)
+            var url = "nome="+nome_mat.data+"&descricao="+descricao_mat.data;
+            fetch(baseFecthUrl("addmateria?"+url));
         });
 
 
