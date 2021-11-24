@@ -55,4 +55,9 @@ public class Assunto extends BaseEntity {
 	{
 		return "INSERT (" + id +  "," + nome + "," + materia_id + "," + horasEstudadas + ", " + lembrete + ") INTO " + GetTable();
 	}
+	
+	public String GetJson() 
+	{
+		return "{ \"id\": "+id+", \"nome\": \""+nome+"\", \"materia_guid\": "+materia_id+", \"data\": \""+lembrete+"\" }";
+	}
 }

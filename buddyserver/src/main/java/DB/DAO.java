@@ -106,6 +106,35 @@ public class DAO {
 		return materias;
 	}
 	
+	public Assunto[] GetAssuntos(int materiaId)
+	{
+		Assunto[] assuntos = null;
+		
+		try 
+		{
+			Statement st = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+			ResultSet rs = st.executeQuery("SELECT * FROM assunto WHERE materia_guid = " + materiaId);
+			if(rs.next()) 
+			{
+				rs.last();
+				assuntos = new Assunto[rs.getRow()];
+				rs.beforeFirst();
+				
+				for(int i = 0; rs.next(); i++) 
+				{
+					assuntos[i] = new Assunto(rs.getInt("id"), rs.getString("nome"), materiaId, rs.getInt("horas_estudadas"), rs.getDate("lembrete").toString());
+				}
+			}
+			System.out.println("Returnin with " + assuntos.length + " datas...");
+			st.close();
+		}catch(Exception e) 
+		{
+			System.err.println(e.getMessage());
+		}
+		
+		return assuntos;
+	}
+	
 	public Estudante GetEstudante(int id) 
 	{
 		Estudante estudante = null;

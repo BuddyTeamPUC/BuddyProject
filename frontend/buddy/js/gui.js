@@ -53,12 +53,25 @@ function page_login()
             .then(subjectData => 
             {
                 user.materias = subjectData.data;
+                
                 user.materias.forEach(materia => {
-                    
-                });
-                console.log(user);
-                drawPage("middle_section", page_dashboard);
-            })
+                });  
+                
+                var assuntosPromises = [];
+
+                user.materias.forEach(materia => 
+                    {
+                        assuntosPromises.push
+                        (
+                            fetch(baseFecthUrl("assuntos?materialid="+materia.id))
+                            .then(topicsRespose => topicsRespose.json())
+                            .then(topicsData => materia.assuntos = topicsData.data)
+                        );
+                    });
+
+                Promise.all(assuntosPromises).then(()=> { drawPage("middle_section", page_dashboard); });
+
+            });
         })
     });
 
@@ -173,8 +186,7 @@ function page_dashboard()
     }
     
     
-    
-
+    console.log(materiasParaMostrar);
     drawDashboard(materiasParaMostrar);
 }
 function drawSideBar()
@@ -346,12 +358,19 @@ function drawDashboard(materias){
     var americano = yyyy + "-" + mm + "-" + dd ;
     hj = {'ano':yyyy, 'mes':mm, 'dia':dd, 'americano':americano};
 
-    
 
     //criar um array com todas as datas cadastradas sem repeticoes
-    var dates = []; 
+    var dates = [];
+    
+    for(const elM of materias)
+    {
+        console.log("elM");
+        console.log(elM);
+    }
+    
     materias.forEach(elM => {
-        elM.assuntos.forEach(elA =>{
+        
+            elM.assuntos.forEach(elA =>{
             var aux = false;
             dates.forEach(elD =>{
                 if(elD.localeCompare(elA.data)==0){

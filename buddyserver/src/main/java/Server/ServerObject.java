@@ -88,6 +88,12 @@ public class ServerObject {
 			CommunicationResult result = materiaisRequest.ProcessRequest();
 			Write(client, result.GetJson());
 		}
+		else if(request.contains("/assuntos")) 
+		{
+			TopicsRequest topicsRequest = new TopicsRequest(request);
+			CommunicationResult result = topicsRequest.ProcessRequest();
+			Write(client, result.GetJson());
+		}
 		else 
 		{
 			System.out.println("Invalid request: " + request);
