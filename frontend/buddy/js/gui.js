@@ -501,26 +501,28 @@ function drawDashboard(materias){
     // display revisoes de hoje e futuras
     if(dates.length > 0){
         dates.forEach(date =>{
+
             new uielement_h2("middle_section", date.display); 
             
+            var opcoes = [];
             materias.forEach(materia =>{
     
                 materia.assuntos.forEach(assunto =>{
-    
+
                     if(assunto.data.localeCompare(date.americano)==0){
                         
-                        new uielement_titled_subtitled_button("middle_section", materia.nome, assunto.nome, null, ()=> { 
+                        
+                        opcoes.push(new uielement_titled_subtitled_button("middle_section", materia.nome, assunto.nome, null, ()=> { 
                             currSubject = materia;
                             curTopic = assunto;
                             drawPage("middle_section", page_topic);
-                        }); 
-                        
+                        })); 
                     }
-    
                 });
-    
+                
+                display_horizontal("middle_section", opcoes);
+
             });
-    
         });
     }else{
         new uielement_h3("middle_section", "Não temos revisões futuras!");
