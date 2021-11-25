@@ -96,8 +96,20 @@ public class ServerObject {
 		}
 		else if(request.contains("/addmateria")) 
 		{
+			CreateSubjectRequest createSubjectRequest = new CreateSubjectRequest(request);
+			CommunicationResult result = createSubjectRequest.ProcessRequest();
+			Write(client, result.GetJson());
+		}
+		else if(request.contains("/addassunto")) 
+		{
 			CreateTopicRequest createTopicRequest = new CreateTopicRequest(request);
 			CommunicationResult result = createTopicRequest.ProcessRequest();
+			Write(client, result.GetJson());
+		}
+		else if(request.contains("/assuntolink")) 
+		{
+			AssuntoLinksRequest assuntoLinksRequest = new AssuntoLinksRequest(request);
+			CommunicationResult result = assuntoLinksRequest.ProcessRequest();
 			Write(client, result.GetJson());
 		}
 		else 

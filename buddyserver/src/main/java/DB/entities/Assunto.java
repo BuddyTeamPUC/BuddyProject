@@ -6,14 +6,16 @@ public class Assunto extends BaseEntity {
 	int materia_id;
 	int horasEstudadas;
 	String lembrete;
+	String descricao;
 	
-	public Assunto(int id, String nome, int materia_id, int horasEstudadas, String lembrete) 
+	public Assunto(int id, String nome, int materia_id, int horasEstudadas, String lembrete, String descricao) 
 	{
 		super(id);
 		this.nome = nome;
 		this.materia_id = materia_id;
 		this.horasEstudadas = horasEstudadas;
 		this.lembrete = lembrete;
+		this.descricao = descricao;
 	}
 	
 	public String GetTable()
@@ -53,11 +55,11 @@ public class Assunto extends BaseEntity {
 	
 	public String Insert() 
 	{
-		return "INSERT INTO "+GetTable()+"(id, nome, materia_guid, horas_estudadas, lembrete) VALUES ("+id+", '"+nome+"', "+materia_id+", "+horasEstudadas+", '"+lembrete+"')";
+		return "INSERT INTO "+GetTable()+"(id, nome, materia_guid, horas_estudadas, lembrete, descricao) VALUES ("+id+", '"+nome+"', "+materia_id+", "+horasEstudadas+", '"+lembrete+"', '"+descricao+"')";
 	}
 	
 	public String GetJson() 
 	{
-		return "{ \"id\": "+id+", \"nome\": \""+nome+"\", \"materia_guid\": "+materia_id+", \"data\": \""+lembrete+"\" }";
+		return "{ \"id\": "+id+", \"nome\": \""+nome+"\", \"materia_guid\": "+materia_id+", \"data\": \""+lembrete+"\", \"desricao\": \""+descricao+"\" }";
 	}
 }

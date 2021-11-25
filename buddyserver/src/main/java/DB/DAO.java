@@ -84,7 +84,7 @@ public class DAO {
 		try 
 		{
 			Statement st = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
-			ResultSet rs = st.executeQuery("SELECT * FROM materia WHERE id = " + estudanteId);
+			ResultSet rs = st.executeQuery("SELECT * FROM materia WHERE estudante_id = " + estudanteId);
 			if(rs.next()) 
 			{
 				rs.last();
@@ -93,7 +93,7 @@ public class DAO {
 				
 				for(int i = 0; rs.next(); i++) 
 				{
-					materias[i] = new Materia(rs.getInt("id"), rs.getString("nome"), estudanteId);
+					materias[i] = new Materia(rs.getInt("id"), rs.getString("nome"), rs.getString("descricao"), estudanteId);
 				}
 			}
 			System.out.println("Returnin with " + materias.length + " datas...");
@@ -104,6 +104,64 @@ public class DAO {
 		}
 		
 		return materias;
+	}
+	
+	public Materia[] GetMaterias()
+	{
+		Materia[] materias = null;
+		
+		try 
+		{
+			Statement st = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+			ResultSet rs = st.executeQuery("SELECT * FROM materia");
+			if(rs.next()) 
+			{
+				rs.last();
+				materias = new Materia[rs.getRow()];
+				rs.beforeFirst();
+				
+				for(int i = 0; rs.next(); i++) 
+				{
+					materias[i] = new Materia(rs.getInt("id"), rs.getString("nome"), rs.getString("descricao"), rs.getInt("estudante_id"));
+				}
+			}
+			System.out.println("Returnin with " + materias.length + " datas...");
+			st.close();
+		}catch(Exception e) 
+		{
+			System.err.println(e.getMessage());
+		}
+		
+		return materias;
+	}
+	
+	public Assunto[] GetAssuntos()
+	{
+		Assunto[] assuntos = null;
+		
+		try 
+		{
+			Statement st = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+			ResultSet rs = st.executeQuery("SELECT * FROM assunto");
+			if(rs.next()) 
+			{
+				rs.last();
+				assuntos = new Assunto[rs.getRow()];
+				rs.beforeFirst();
+				
+				for(int i = 0; rs.next(); i++) 
+				{
+					assuntos[i] = new Assunto(rs.getInt("id"), rs.getString("nome"), rs.getInt("materia_guid"), rs.getInt("horas_estudadas"), rs.getDate("lembrete").toString(), rs.getString("descricao"));
+				}
+			}
+			System.out.println("Returnin with " + assuntos.length + " datas...");
+			st.close();
+		}catch(Exception e) 
+		{
+			System.err.println(e.getMessage());
+		}
+		
+		return assuntos;
 	}
 	
 	public Assunto[] GetAssuntos(int materiaId)
@@ -122,7 +180,7 @@ public class DAO {
 				
 				for(int i = 0; rs.next(); i++) 
 				{
-					assuntos[i] = new Assunto(rs.getInt("id"), rs.getString("nome"), materiaId, rs.getInt("horas_estudadas"), rs.getDate("lembrete").toString());
+					assuntos[i] = new Assunto(rs.getInt("id"), rs.getString("nome"), materiaId, rs.getInt("horas_estudadas"), rs.getDate("lembrete").toString(), rs.getString("descricao"));
 				}
 			}
 			System.out.println("Returnin with " + assuntos.length + " datas...");
@@ -133,6 +191,35 @@ public class DAO {
 		}
 		
 		return assuntos;
+	}
+	
+	public Materiais_link[] GetAssuntosMaterial(int assuntoId)
+	{
+		Materiais_link[] links = null;
+		
+		try 
+		{
+			Statement st = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+			ResultSet rs = st.executeQuery("SELECT * FROM materiais_link WHERE assunto_id = " + assuntoId);
+			if(rs.next()) 
+			{
+				rs.last();
+				links = new Materiais_link[rs.getRow()];
+				rs.beforeFirst();
+				
+				for(int i = 0; rs.next(); i++) 
+				{
+					links[i] = new Materiais_link(rs.getInt("id"), rs.getString("nome"), rs.getString("links"), assuntoId);
+				}
+			}
+			System.out.println("Returnin with " + links.length + " datas...");
+			st.close();
+		}catch(Exception e) 
+		{
+			System.err.println(e.getMessage());
+		}
+		
+		return links;
 	}
 	
 	public Estudante GetEstudante(int id) 

@@ -188,6 +188,13 @@ function page_dashboard()
     
     console.log(materiasParaMostrar);
     drawDashboard(materiasParaMostrar);
+
+    if(currSubject != null)
+    {
+        new uielement_rounded_button("footer_section", "+ Assunto",null,()=>{
+            drawPage("middle_section", page_addAssunto);
+        },null,{'margin_left': '85%','margin_top': '-1%'});
+    }
 }
 function drawSideBar()
 {
@@ -244,15 +251,19 @@ function page_create()
         var nome_mat = new uielement_inputfield("middle_section", "Nome matéria", "", null, {'margin_bottom': ' 10px'} )
         var descricao_mat = new uielement_inputfield("middle_section", "Descrição da matéria", "", null, {'margin_bottom': '20px'} )
         new uielement_rounded_button("middle_section", "Confirmar", null,()=> { 
-            var novaMateria = {
-                "id" : 10, 
-                "nome" : nome_mat.data,
-                "descricao" : descricao_mat.data,
-                "assuntos" : []
-            }
-            currSubject = novaMateria;
-            var url = "nome="+nome_mat.data+"&descricao="+descricao_mat.data;
-            fetch(baseFecthUrl("addmateria?"+url));
+           var url = "user_id="+user.credentials.id+"&nome="+nome_mat.data+"&descricao="+descricao_mat.data;
+            fetch(baseFecthUrl("addmateria?"+url))
+            .then(response => response.json())
+            .then(data => 
+                {
+                    console.log(user);
+                    currSubject = data.data;
+                    console.log(data.data);
+                    currSubject = data.data;
+                    data.data.assuntos = [];
+                    user.materias.push(data.data);
+                    drawPage("middle_section", page_dashboard);
+                });
         });
 
 
@@ -277,14 +288,14 @@ function page_topic(){
     
     //Links úteis:
     if(curTopic.link.length>0){
-    new uielement_h2("middle_section","Links úteis:",null,);
-    new uielement_rounded_button("footer_section", "+ Links",null,()=>{
-        drawPage("middle_section",page_addlink);
-    },null,{'margin_left': '90%','margin_top': '-1%'});
-    console.log(curTopic.link);
-    curTopic.link.forEach(l =>{
-        new uielement_h3_hyperlink("middle_section",l.link_nome,null,l.link_hyperlink);
-    });
+        new uielement_h2("middle_section","Links úteis:",null,);
+        new uielement_rounded_button("footer_section", "+ Links",null,()=>{
+            drawPage("middle_section",page_addlink);
+        },null,{'margin_left': '90%','margin_top': '-1%'});
+        console.log(curTopic.link);
+        curTopic.link.forEach(l =>{
+            new uielement_h3_hyperlink("middle_section",l.link_nome,null,l.link_hyperlink);
+        });
     }
     else{
         new uielement_h3("middle_section", "Nenhum link cadastrado");
@@ -320,17 +331,34 @@ function page_topic(){
     });
     }
 
-
-    
-
 }
 function page_addlink(){
     new uielement_h1("middle_section",currSubject.nome+ " : " + curTopic.nome );
     var titulo = new uielement_inputfield("middle_section","Título","");
     var link = new uielement_inputfield("middle_section","Link","");
     new uielement_rounded_button("middle_section","Adicionar",null,()=>{
-        drawPage("middle_section",page_topic);
+        
+    });
+}
 
+function page_addAssunto()
+{
+    new uielement_h1("middle_section", "Agendar um assunto");
+    new uielement_h2("middle_section",currSubject.nome);
+    var titulo = new uielement_inputfield("middle_section","Título","");
+    var descricao = new uielement_inputfield("middle_section","Descrição","");
+    
+    new uielement_rounded_button("middle_section","Adicionar",null,()=>{
+        var url = "materia_id="+currSubject.id+"&nome="+titulo.data+"&descricao="+descricao.data;
+        fetch(baseFecthUrl("addassunto?"+url))
+        .then(response => response.json())
+        .then(data => 
+            {
+                data.data.link = [];
+                curTopic = data.data;
+                currSubject.assuntos.push(data.data);
+                drawPage("middle_section", page_topic);
+            })
     });
 }
 
@@ -514,8 +542,17 @@ function drawDashboard(materias){
                         
                         opcoes.push(new uielement_titled_subtitled_button("middle_section", materia.nome, assunto.nome, null, ()=> { 
                             currSubject = materia;
-                            curTopic = assunto;
-                            drawPage("middle_section", page_topic);
+                            if(assunto.link == null|| assunto.link.length == 0)
+                            {
+                                var url = "assuntolinks?assuntoid="+assunto.id;
+                                fetch(baseFecthUrl(url))
+                                .then(response => response.json())
+                                .then(data =>
+                                {
+                                    assunto.link = data.data;
+                                    drawPage("middle_section", page_topic);
+                                });
+                            }
                         })); 
                     }
                 });

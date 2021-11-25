@@ -1,25 +1,24 @@
 package Server.Communication;
 
-import utils.*;
 import DB.ConnectionSettings;
 import DB.DAO;
 import DB.entities.Assunto;
+import DB.entities.Materia;
 import Server.Communication.Result.CommunicationResult;
 
-public class CreateTopicRequest extends BaseRequest {
+public class CreateSubjectRequest extends BaseRequest {
 
-	//Layout: materia_id=x&nome=y&descricao=z
-	
-	int materia_id;
+	int user_id;
 	String nome;
 	String descricao;
 	
-	public CreateTopicRequest(String requestString) 
+	///addmateria?user_id=xnome=Ac%20I&descricao=uma%20materia%20bem%20bleeh
+	
+	public CreateSubjectRequest(String requestString) 
 	{
 		super(requestString);
-		
 		String[] infoLines = requestString.split("\\?")[1].split("&");
-		this.materia_id = Integer.parseInt(infoLines[0].split("=")[1].replace("%20", " "));
+		this.user_id = Integer.parseInt(infoLines[0].split("=")[1].replace("%20", " "));
 		this.nome = infoLines[1].split("=")[1].replace("%20", " ");
 		this.descricao = infoLines[2].split("=")[1].replace("%20", " ");
 	}
@@ -31,14 +30,14 @@ public class CreateTopicRequest extends BaseRequest {
 		{
 			dao.Start(new ConnectionSettings("localhost", "buddy", 3306, "root", "Fh$tudi0123"));
 			
-			Assunto[] assuntos = dao.GetAssuntos();
-			int id = (assuntos != null && assuntos.length > 0) ? assuntos.length : 0;
+			Materia[] materias = dao.GetMaterias();
+			int id = (materias != null && materias.length > 0) ? materias.length : 0;
 			
-			Assunto newTopic = new Assunto(id, nome, materia_id, 0, DateUtil.Now(), descricao);
+			Materia newSubject = new Materia(id, nome, descricao, user_id);
 			
-			dao.Insert(newTopic);
+			dao.Insert(newSubject);
 			
-			return new CommunicationResult(true, "Topic successfully added", newTopic.GetJson());
+			return new CommunicationResult(true, "Topic successfully added", newSubject.GetJson());
 		}
 		catch(Exception e) 
 		{

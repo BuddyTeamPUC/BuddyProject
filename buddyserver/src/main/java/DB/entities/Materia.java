@@ -3,13 +3,15 @@ package DB.entities;
 public class Materia extends BaseEntity {
 	
 	String nome;
+	String descricao;
 	int estudante_id;
 	
-	public Materia(int id, String nome, int estudante_id) 
+	public Materia(int id, String nome, String descricao, int estudante_id) 
 	{
 		super(id);
 		this.id = id;
 		this.nome = nome;
+		this.descricao = descricao;
 		this.estudante_id = estudante_id;
 	}
 	
@@ -40,11 +42,11 @@ public class Materia extends BaseEntity {
 	
 	public String Insert() 
 	{
-		return "INSERT INTO " + GetTable() + "(id, nome, estudante_id) VALUES ('"+id+"','"+nome+"','"+estudante_id+"')";
+		return "INSERT INTO " + GetTable() + "(id, nome, estudante_id, descricao) VALUES ("+id+",'"+nome+"',"+estudante_id+", '"+descricao+"')";
 	}
 	
 	public String GetJson() 
 	{
-		return "{ \"id\": "+id+", \"nome\": \""+nome+"\", \"estudante_id\": "+estudante_id+" }";
+		return "{ \"id\": "+id+", \"nome\": \""+nome+"\", \"descricao\": \""+descricao+"\", \"estudante_id\": "+estudante_id+" }";
 	}
 }

@@ -3,12 +3,14 @@ package DB.entities;
 public class Materiais_link extends BaseEntity{
 	
 	String link;
+	String nome;
 	int assunto_id;
 		
-	public Materiais_link(int id, String link, int assunto_id) 
+	public Materiais_link(int id, String nome, String link, int assunto_id) 
 	{
 		super(id);
 		this.id = id;
+		this.nome = nome;
 		this.link = link;
 		this.assunto_id = assunto_id;
 	}
@@ -40,7 +42,12 @@ public class Materiais_link extends BaseEntity{
 	
 	public String Insert() 
 	{
-		return "INSERT (" + id +  "," + link + "," + assunto_id + ") INTO " + GetTable();
+		return "INSERT INTO "+GetTable()+" (id, nome, links, assunto_id) VALUES ("+ id +  ",'"+nome+"','" + link + "'," + assunto_id + ")";
+	}
+	
+	public String GetJson() 
+	{
+		return "{ \"id\": "+id+", \"nome\": \""+nome+"\", \"link\": \""+link+"\", \"assunto_id\": "+assunto_id+" }";
 	}
 	
 }
