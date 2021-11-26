@@ -3,7 +3,7 @@ const subjects = [];
 var curTopic = null;
 var currSubject = null;
 var user = null;
-var isLive = false;
+var isLive = true;
 
 $( document ).ready(function()
 {
@@ -771,7 +771,7 @@ function drawDashboard(materias){
 
 function baseFecthUrl(path)
 {
-    return (!isLive) ? "http://localhost:8080/" + path : ""; 
+    return (!isLive) ? "http://localhost:8080/" + path : "http://201.32.50.74:8080/" + path; 
 }
 
 function updateSessionStorage()
