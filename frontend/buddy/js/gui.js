@@ -30,8 +30,8 @@ function drawPage(parent, pageFunction)
 function page_login()
 {
     new uielement_h1("middle_section", "Login");
-    var email = new uielement_inputfield("middle_section", "email", "");
-    var pass = new uielement_inputfield("middle_section", "senha", "");
+    var email = new uielement_inputfield("middle_section", "email", "", "text");
+    var pass = new uielement_inputfield("middle_section", "senha", "", "password");
 
     pass.addAttribute("type", "password");
 
@@ -75,7 +75,7 @@ function page_login()
                 Promise.all(assuntosPromises).then(()=> 
                 { 
                     drawPage("middle_section", page_dashboard);
-                    sessionStorage.setItem("logged_user", JSON.stringify(user));
+                    updateSessionStorage();
                 });
 
             });
@@ -117,11 +117,11 @@ function page_register()
 {
     new uielement_h1("middle_section", "Login");
 
-    var nome = new uielement_inputfield("middle_section", "nome", "");
-    var sobrenome = new uielement_inputfield("middle_section", "sobrenome", "");
-    var email = new uielement_inputfield("middle_section", "email", "");
-    var pass = new uielement_inputfield("middle_section", "senha", "");
-    var confirmpass = new uielement_inputfield("middle_section", "confirmar senha", "");
+    var nome = new uielement_inputfield("middle_section", "nome", "", "text");
+    var sobrenome = new uielement_inputfield("middle_section", "sobrenome", "", "text");
+    var email = new uielement_inputfield("middle_section", "email", "", "text");
+    var pass = new uielement_inputfield("middle_section", "senha", "", "password");
+    var confirmpass = new uielement_inputfield("middle_section", "confirmar senha", "", "password");
 
     pass.addAttribute("type", "password");
     confirmpass.addAttribute("type", "password");
@@ -255,8 +255,8 @@ function page_create()
 {
     new uielement_h1("middle_section", "Criar matéria", null, { 'margin_bottom': '10px' });
 
-        var nome_mat = new uielement_inputfield("middle_section", "Nome matéria", "", null, {'margin_bottom': ' 10px'} )
-        var descricao_mat = new uielement_inputfield("middle_section", "Descrição da matéria", "", null, {'margin_bottom': '20px'} )
+        var nome_mat = new uielement_inputfield("middle_section", "Nome matéria", "", "text", null, {'margin_bottom': ' 10px'} )
+        var descricao_mat = new uielement_inputfield("middle_section", "Descrição da matéria", "", "text", null, {'margin_bottom': '20px'} )
         new uielement_rounded_button("middle_section", "Confirmar", null,()=> { 
            
             var canAdd = user.materias.every((materia, index, array)=>{ return materia.nome != nome_mat.data; });
@@ -274,6 +274,7 @@ function page_create()
                         currSubject = data.data;
                         data.data.assuntos = [];
                         user.materias.push(data.data);
+                        updateSessionStorage();
                         drawPage("middle_section", page_dashboard);
                     });
                 }
@@ -347,8 +348,8 @@ function page_topic(){
 }
 function page_addlink(){
     new uielement_h1("middle_section",currSubject.nome+ " : " + curTopic.nome );
-    var titulo = new uielement_inputfield("middle_section","Título","");
-    var link = new uielement_inputfield("middle_section","Link","");
+    var titulo = new uielement_inputfield("middle_section","Título","", "text");
+    var link = new uielement_inputfield("middle_section","Link","", "text");
     new uielement_rounded_button("middle_section","Adicionar",null,()=>{
         
         var canAdd = curTopic.link.every((value, index, array)=> { return value.nome != titulo.data; });
@@ -364,6 +365,7 @@ function page_addlink(){
                     curTopic.link = [];
 
                 curTopic.link.push(data.data); 
+                updateSessionStorage();
                 drawPage("middle_section", page_topic);
             });
         }
@@ -378,8 +380,8 @@ function page_addAssunto()
 {
     new uielement_h1("middle_section", "Agendar um assunto");
     new uielement_h2("middle_section",currSubject.nome);
-    var titulo = new uielement_inputfield("middle_section","Título","");
-    var descricao = new uielement_inputfield("middle_section","Descrição","");
+    var titulo = new uielement_inputfield("middle_section","Título","", "text");
+    var descricao = new uielement_inputfield("middle_section","Descrição","", "text");
     var calendario = new uielement_calendar("middle_section", "", ()=>
     {
         console.log("teste");
@@ -399,6 +401,7 @@ function page_addAssunto()
                 data.data.link = [];
                 curTopic = data.data;
                 currSubject.assuntos.push(data.data);
+                updateSessionStorage();
                 drawPage("middle_section", page_topic);
             })
         }
@@ -769,6 +772,11 @@ function drawDashboard(materias){
 function baseFecthUrl(path)
 {
     return (!isLive) ? "http://localhost:8080/" + path : ""; 
+}
+
+function updateSessionStorage()
+{
+    sessionStorage.setItem("logged_user", JSON.stringify(user));
 }
 
 function isEmpty(str) {

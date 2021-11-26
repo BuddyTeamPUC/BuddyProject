@@ -249,11 +249,12 @@ class uielement_rounded_button extends uielement
 
 class uielement_inputfield extends uielement
 {
-    constructor(parent, _placeholder, data, _onDataChanged, style)
+    constructor(parent, _placeholder, data, type, _onDataChanged, style)
     {
         super(parent, data, _onDataChanged, style);
         this.placeholder = _placeholder;
         this.tag = "input";
+        this.type = type;
         
         $("."+parent).append("<div class='"+this.itemClass+"'></div>");
         
@@ -271,7 +272,7 @@ class uielement_inputfield extends uielement
     {
         this.html = '<'+this.tag+' class="'+this.tag+'_'+this.id+'" placeholder="'+this.placeholder+'" value="'+this.data+'""></'+this.tag+'>';
         $("."+this.id).html(this.html);
-        this.addAttribute("type", "text");
+        this.addAttribute("type", this.type);
         this.setStyle(this.style);
     }
 }
