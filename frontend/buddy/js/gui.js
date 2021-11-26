@@ -7,6 +7,9 @@ var isLive = false;
 
 $( document ).ready(function()
 {
+    
+    user = JSON.parse(sessionStorage.getItem("logged_user"));
+
     drawPage("middle_section", page_dashboard);
     console.log(user)
 
@@ -69,7 +72,11 @@ function page_login()
                         );
                     });
 
-                Promise.all(assuntosPromises).then(()=> { drawPage("middle_section", page_dashboard); });
+                Promise.all(assuntosPromises).then(()=> 
+                { 
+                    drawPage("middle_section", page_dashboard);
+                    sessionStorage.setItem("logged_user", JSON.stringify(user));
+                });
 
             });
         })
@@ -251,19 +258,29 @@ function page_create()
         var nome_mat = new uielement_inputfield("middle_section", "Nome matéria", "", null, {'margin_bottom': ' 10px'} )
         var descricao_mat = new uielement_inputfield("middle_section", "Descrição da matéria", "", null, {'margin_bottom': '20px'} )
         new uielement_rounded_button("middle_section", "Confirmar", null,()=> { 
-           var url = "user_id="+user.credentials.id+"&nome="+nome_mat.data+"&descricao="+descricao_mat.data;
-            fetch(baseFecthUrl("addmateria?"+url))
-            .then(response => response.json())
-            .then(data => 
+           
+            var canAdd = user.materias.every((materia, index, array)=>{ return materia.nome != nome_mat.data; });
+           
+            if(canAdd)
+            {
+                var url = "user_id="+user.credentials.id+"&nome="+nome_mat.data+"&descricao="+descricao_mat.data;
+                fetch(baseFecthUrl("addmateria?"+url))
+                .then(response => response.json())
+                .then(data => 
+                    {
+                        console.log(user);
+                        currSubject = data.data;
+                        console.log(data.data);
+                        currSubject = data.data;
+                        data.data.assuntos = [];
+                        user.materias.push(data.data);
+                        drawPage("middle_section", page_dashboard);
+                    });
+                }
+                else
                 {
-                    console.log(user);
-                    currSubject = data.data;
-                    console.log(data.data);
-                    currSubject = data.data;
-                    data.data.assuntos = [];
-                    user.materias.push(data.data);
-                    drawPage("middle_section", page_dashboard);
-                });
+                    alert("O nome " + nome_mat.data + " já esta sendo utilizado em outra matéria");
+                }
         });
 
 
@@ -285,12 +302,12 @@ function page_topic(){
     //Links úteis:
     if(curTopic.link != null && curTopic.link.length>0){
         new uielement_h2("middle_section","Links úteis:",null,);
-        new uielement_rounded_button("footer_section", "+ Links",null,()=>{
+        new uielement_rounded_button("footer_section", "+ Link",null,()=>{
             drawPage("middle_section",page_addlink);
         },null,{'margin_left': '85%','margin_top': '-1%'});
         console.log(curTopic.link);
         curTopic.link.forEach(l =>{
-            new uielement_h3_hyperlink("middle_section",l.nome,null,l.link);
+            new uielement_h3_hyperlink("middle_section",l.nome,null,l.link, { "margin_bottom" : "-40px" });
         });
     }
     else{
@@ -333,18 +350,27 @@ function page_addlink(){
     var titulo = new uielement_inputfield("middle_section","Título","");
     var link = new uielement_inputfield("middle_section","Link","");
     new uielement_rounded_button("middle_section","Adicionar",null,()=>{
-        var url = baseFecthUrl("/addlink?assunto_id="+curTopic.id+"&titulo="+titulo.data+"&link="+link.data);
-        console.log(url);
-        fetch(url)
-        .then(response => response.json())
-        .then(data =>
+        
+        var canAdd = curTopic.link.every((value, index, array)=> { return value.nome != titulo.data; });
+        
+        if(canAdd)
         {
-            if(curTopic.link == null)
-                curTopic.link = [];
+            var url = baseFecthUrl("/addlink?assunto_id="+curTopic.id+"&titulo="+titulo.data+"&link="+link.data);
+            fetch(url)
+            .then(response => response.json())
+            .then(data =>
+            {
+                if(curTopic.link == null)
+                    curTopic.link = [];
 
-            curTopic.link.push(data.data); 
-            drawPage("middle_section", page_topic);
-        });
+                curTopic.link.push(data.data); 
+                drawPage("middle_section", page_topic);
+            });
+        }
+        else
+        {
+            alert("O nome " + titulo.data + " ja esta sendo utilizado.");
+        }
     });
 }
 
@@ -354,18 +380,32 @@ function page_addAssunto()
     new uielement_h2("middle_section",currSubject.nome);
     var titulo = new uielement_inputfield("middle_section","Título","");
     var descricao = new uielement_inputfield("middle_section","Descrição","");
+    var calendario = new uielement_calendar("middle_section", "", ()=>
+    {
+        console.log("teste");
+    });
     
     new uielement_rounded_button("middle_section","Adicionar",null,()=>{
-        var url = "materia_id="+currSubject.id+"&nome="+titulo.data+"&descricao="+descricao.data;
-        fetch(baseFecthUrl("addassunto?"+url))
-        .then(response => response.json())
-        .then(data => 
+        
+        var canAdd = currSubject.assuntos.every((assunto, index, array)=> { return assunto.nome != titulo.data });
+        
+        if(canAdd)
+        {
+            var url = "materia_id="+currSubject.id+"&nome="+titulo.data+"&descricao="+descricao.data+"&data="+calendario.data;
+            fetch(baseFecthUrl("addassunto?"+url))
+            .then(response => response.json())
+            .then(data => 
             {
                 data.data.link = [];
                 curTopic = data.data;
                 currSubject.assuntos.push(data.data);
                 drawPage("middle_section", page_topic);
             })
+        }
+        else
+        {
+            alert("O nome " + titulo.data + " já está sendo utilizado");
+        }
     });
 }
 

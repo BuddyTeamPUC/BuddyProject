@@ -262,18 +262,17 @@ class uielement_inputfield extends uielement
         $("."+this.id).on('change', ()=>
         {
             this.setData( $("."+this.tag+'_'+this.id).val().trim() );
-            this.draw(data);
+            // this.draw(data);
         });
         
-        this.addAttribute("type", "text");
     }
-
-    draw()
+    
+    draw(data)
     {
         this.html = '<'+this.tag+' class="'+this.tag+'_'+this.id+'" placeholder="'+this.placeholder+'" value="'+this.data+'""></'+this.tag+'>';
         $("."+this.id).html(this.html);
+        this.addAttribute("type", "text");
         this.setStyle(this.style);
-        this.updateAttr();
     }
 }
 
@@ -320,5 +319,33 @@ class uielement_h3_hyperlink extends uielement_h3
         super.draw(data);
         this.addAttribute("style","display : inline-block");
         $("."+ this.id).append("<img src='../img/external_link_icon.svg' width= 18px style= 'padding-left : 4px; margin-top : 50px'>");
+    }
+}
+
+class uielement_calendar extends uielement
+{
+    constructor(parent, data, onDataChanged, style)
+    {
+        super(parent, data, onDataChanged, style);
+        this.tag = "input";
+
+        $("."+parent).append("<div class='"+this.itemClass+"'></div>");
+
+        this.draw();
+
+        $("."+this.id).on('change', ()=>
+        {
+            console.log($("."+this.tag+'_'+this.id).val());
+            this.setData( $("."+this.tag+'_'+this.id).val() );
+        });
+
+    }
+    
+    draw(data)
+    {
+        this.html = '<'+this.tag+' class="'+this.tag+'_'+this.id+'" value="'+data+'"></'+this.tag+'>';
+        $("."+this.id).html(this.html);
+        this.addAttribute("type", "date");
+        this.setStyle(this.style);
     }
 }

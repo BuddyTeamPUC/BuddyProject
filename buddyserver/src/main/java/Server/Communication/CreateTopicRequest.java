@@ -13,6 +13,7 @@ public class CreateTopicRequest extends BaseRequest {
 	int materia_id;
 	String nome;
 	String descricao;
+	String data;
 	
 	public CreateTopicRequest(String requestString) 
 	{
@@ -22,6 +23,7 @@ public class CreateTopicRequest extends BaseRequest {
 		this.materia_id = Integer.parseInt(infoLines[0].split("=")[1].replace("%20", " "));
 		this.nome = infoLines[1].split("=")[1].replace("%20", " ");
 		this.descricao = infoLines[2].split("=")[1].replace("%20", " ");
+		this.data = infoLines[3].split("=")[1];
 	}
 	
 	public CommunicationResult ProcessRequest() 
@@ -34,7 +36,7 @@ public class CreateTopicRequest extends BaseRequest {
 			Assunto[] assuntos = dao.GetAssuntos();
 			int id = (assuntos != null && assuntos.length > 0) ? assuntos.length : 0;
 			
-			Assunto newTopic = new Assunto(id, nome, materia_id, 0, DateUtil.Now(), descricao);
+			Assunto newTopic = new Assunto(id, nome, materia_id, 0, data, descricao);
 			
 			dao.Insert(newTopic);
 			
