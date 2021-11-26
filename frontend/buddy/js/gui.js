@@ -268,11 +268,7 @@ function page_create()
 
 
 }
-function page_subject()
-{
-    new uielement_h1("middle_section", currSubject.nome);
-    new uielement_h2("middle_section", currSubject.descricao, null, { "margin_top" : "-30px" } );
-}
+
 // GUILHERME
 
 function page_topic(){
@@ -287,14 +283,14 @@ function page_topic(){
 
     
     //Links úteis:
-    if(curTopic.link.length>0){
+    if(curTopic.link != null && curTopic.link.length>0){
         new uielement_h2("middle_section","Links úteis:",null,);
         new uielement_rounded_button("footer_section", "+ Links",null,()=>{
             drawPage("middle_section",page_addlink);
-        },null,{'margin_left': '90%','margin_top': '-1%'});
+        },null,{'margin_left': '85%','margin_top': '-1%'});
         console.log(curTopic.link);
         curTopic.link.forEach(l =>{
-            new uielement_h3_hyperlink("middle_section",l.link_nome,null,l.link_hyperlink);
+            new uielement_h3_hyperlink("middle_section",l.nome,null,l.link);
         });
     }
     else{
@@ -337,7 +333,18 @@ function page_addlink(){
     var titulo = new uielement_inputfield("middle_section","Título","");
     var link = new uielement_inputfield("middle_section","Link","");
     new uielement_rounded_button("middle_section","Adicionar",null,()=>{
-        
+        var url = baseFecthUrl("/addlink?assunto_id="+curTopic.id+"&titulo="+titulo.data+"&link="+link.data);
+        console.log(url);
+        fetch(url)
+        .then(response => response.json())
+        .then(data =>
+        {
+            if(curTopic.link == null)
+                curTopic.link = [];
+
+            curTopic.link.push(data.data); 
+            drawPage("middle_section", page_topic);
+        });
     });
 }
 
@@ -541,17 +548,23 @@ function drawDashboard(materias){
                         
                         
                         opcoes.push(new uielement_titled_subtitled_button("middle_section", materia.nome, assunto.nome, null, ()=> { 
+                            curTopic = assunto;
                             currSubject = materia;
-                            if(assunto.link == null|| assunto.link.length == 0)
+                            if(assunto.link == null || assunto.link.length == 0)
                             {
                                 var url = "assuntolinks?assuntoid="+assunto.id;
                                 fetch(baseFecthUrl(url))
                                 .then(response => response.json())
                                 .then(data =>
                                 {
+                                    assunto.link = [];
                                     assunto.link = data.data;
                                     drawPage("middle_section", page_topic);
                                 });
+                            }
+                            else
+                            {
+                                drawPage("middle_section", page_topic);
                             }
                         })); 
                     }
@@ -681,8 +694,19 @@ function drawDashboard(materias){
         
                         if(assunto.data.localeCompare(date.americano)==0){        
                             _materias.push(new uielement_titled_subtitled_button("middle_section", materia.nome, assunto.nome, null, ()=> {
-                                currSubject = materia;
                                 curTopic = assunto;
+                                currSubject = materia;
+                                if(assunto.link == null || assunto.link.length == 0)
+                                {
+                                    var url = "assuntolinks?assuntoid="+assunto.id;
+                                    fetch(baseFecthUrl(url))
+                                    .then(response => response.json())
+                                    .then(data =>
+                                    {
+                                        assunto.link = [];
+                                        assunto.link = data.data;
+                                    });
+                                }
                                 drawPage("middle_section", page_topic);
                             })); 
                         }

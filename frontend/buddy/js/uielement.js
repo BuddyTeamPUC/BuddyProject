@@ -319,6 +319,6 @@ class uielement_h3_hyperlink extends uielement_h3
     draw(data){
         super.draw(data);
         this.addAttribute("style","display : inline-block");
-        $("."+ this.id).append("<img src='../buddy/img/external_link_icon.svg' width= 18px style= 'padding-left : 4px; margin-top : 50px'>");
+        $("."+ this.id).append("<img src='../img/external_link_icon.svg' width= 18px style= 'padding-left : 4px; margin-top : 50px'>");
     }
 }

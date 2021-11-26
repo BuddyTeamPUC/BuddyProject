@@ -32,7 +32,7 @@ public class Materiais_link extends BaseEntity{
 	
 	public String GetTable() 
 	{
-		return "material";
+		return "materiais_link";
 	}
 	
 	public void Imprimir() 

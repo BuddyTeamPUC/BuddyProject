@@ -112,6 +112,12 @@ public class ServerObject {
 			CommunicationResult result = assuntoLinksRequest.ProcessRequest();
 			Write(client, result.GetJson());
 		}
+		else if(request.contains("/addlink")) 
+		{
+			CreateLinkRequest createLinkRequest = new CreateLinkRequest(request);
+			CommunicationResult result = createLinkRequest.ProcessRequest();
+			Write(client, result.GetJson());
+		}
 		else 
 		{
 			System.out.println("Invalid request: " + request);
