@@ -8,7 +8,9 @@ var isLive = true;
 $( document ).ready(function()
 {
     
-    user = JSON.parse(sessionStorage.getItem("logged_user"));
+    // user = JSON.parse(sessionStorage.getItem("logged_user"));
+
+    user = JSON.parse('{"credentials":{"id":0,"nome":"Pedro","sobrenome":"Lourenco","email":"pedro@gmail.com","pass":"123"},"materias":[{"id":0,"nome":"Aeds","descricao":"Algoritmos e estrutura de dados","estudante_id":0,"assuntos":[{"id":0,"nome":"Somatorio","materia_guid":0,"data":"2021-11-29","desricao":"Soma em sequencia"}]},{"id":1,"nome":"Ac","descricao":"Arquitetura de computadores","estudante_id":0,"assuntos":[{"id":2,"nome":"VHDL","materia_guid":1,"data":"2021-11-27","desricao":"aa"}]},{"id":2,"nome":"Religiao","descricao":"Religiao","estudante_id":0,"assuntos":[{"id":1,"nome":"Religiao eee","materia_guid":2,"data":"2021-11-28","desricao":"aaa"}]}]}');
 
     drawPage("middle_section", page_dashboard);
     console.log(user)
@@ -412,6 +414,42 @@ function page_addAssunto()
     });
 }
 
+function page_addEvent()
+{
+    new uielement_h1("middle_section", "Agendar um evento");
+    new uielement_h2("middle_section",currSubject.nome);
+    var titulo = new uielement_inputfield("middle_section","Título","", "text");
+    var descricao = new uielement_inputfield("middle_section","Descrição","", "text");
+    var calendario = new uielement_calendar("middle_section", "", ()=>
+    {
+        console.log("teste");
+    });
+    
+    new uielement_rounded_button("middle_section","Adicionar",null,()=>{
+        
+        var canAdd = currSubject.assuntos.every((assunto, index, array)=> { return assunto.nome != titulo.data });
+        
+        if(canAdd)
+        {
+            var url = "materia_id="+currSubject.id+"&nome="+titulo.data+"&descricao="+descricao.data+"&data="+calendario.data;
+            fetch(baseFecthUrl("addassunto?"+url))
+            .then(response => response.json())
+            .then(data => 
+            {
+                data.data.link = [];
+                curTopic = data.data;
+                currSubject.assuntos.push(data.data);
+                updateSessionStorage();
+                drawPage("middle_section", page_topic);
+            })
+        }
+        else
+        {
+            alert("O nome " + titulo.data + " já está sendo utilizado");
+        }
+    });
+}
+
 function generateUUID() { // Public Domain/MIT
     var d = new Date().getTime();//Timestamp
     var d2 = (performance && performance.now && (performance.now()*1000)) || 0;//Time in microseconds since page-load or 0 if unsupported
@@ -771,7 +809,7 @@ function drawDashboard(materias){
 
 function baseFecthUrl(path)
 {
-    return (!isLive) ? "http://localhost:8080/" + path : "http://201.32.50.74:8080/" + path; 
+    return (!isLive) ? "http://localhost:8080/" + path : "https://pedrolourenco-test-buddy.herokuapp.com/"+path; 
 }
 
 function updateSessionStorage()
