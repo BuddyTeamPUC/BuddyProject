@@ -3,7 +3,7 @@ const subjects = [];
 var curTopic = null;
 var currSubject = null;
 var user = null;
-var isLive = false;
+var isLive = true;
 
 $( document ).ready(function()
 {
@@ -416,7 +416,7 @@ function page_addAssunto()
 
 function page_addEvent()
 {
-    new uielement_h1("middle_section", "Agendar um assunto");
+    new uielement_h1("middle_section", "Agendar um evento");
     new uielement_h2("middle_section",currSubject.nome);
     var titulo = new uielement_inputfield("middle_section","Título","", "text");
     var descricao = new uielement_inputfield("middle_section","Descrição","", "text");
@@ -809,7 +809,7 @@ function drawDashboard(materias){
 
 function baseFecthUrl(path)
 {
-    return (!isLive) ? "http://localhost:8080/" + path : ""; 
+    return (!isLive) ? "http://localhost:8080/" + path : "https://pedrolourenco-test-buddy.herokuapp.com/"+path; 
 }
 
 function updateSessionStorage()
