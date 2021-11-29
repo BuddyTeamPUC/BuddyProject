@@ -8,7 +8,9 @@ var isLive = false;
 $( document ).ready(function()
 {
     
-    user = JSON.parse(sessionStorage.getItem("logged_user"));
+    // user = JSON.parse(sessionStorage.getItem("logged_user"));
+
+    user = JSON.parse('{"credentials":{"id":0,"nome":"Pedro","sobrenome":"Lourenco","email":"pedro@gmail.com","pass":"123"},"materias":[{"id":0,"nome":"Aeds","descricao":"Algoritmos e estrutura de dados","estudante_id":0,"assuntos":[{"id":0,"nome":"Somatorio","materia_guid":0,"data":"2021-11-29","desricao":"Soma em sequencia"}]},{"id":1,"nome":"Ac","descricao":"Arquitetura de computadores","estudante_id":0,"assuntos":[{"id":2,"nome":"VHDL","materia_guid":1,"data":"2021-11-27","desricao":"aa"}]},{"id":2,"nome":"Religiao","descricao":"Religiao","estudante_id":0,"assuntos":[{"id":1,"nome":"Religiao eee","materia_guid":2,"data":"2021-11-28","desricao":"aaa"}]}]}');
 
     drawPage("middle_section", page_dashboard);
     console.log(user)
@@ -377,6 +379,42 @@ function page_addlink(){
 }
 
 function page_addAssunto()
+{
+    new uielement_h1("middle_section", "Agendar um assunto");
+    new uielement_h2("middle_section",currSubject.nome);
+    var titulo = new uielement_inputfield("middle_section","Título","", "text");
+    var descricao = new uielement_inputfield("middle_section","Descrição","", "text");
+    var calendario = new uielement_calendar("middle_section", "", ()=>
+    {
+        console.log("teste");
+    });
+    
+    new uielement_rounded_button("middle_section","Adicionar",null,()=>{
+        
+        var canAdd = currSubject.assuntos.every((assunto, index, array)=> { return assunto.nome != titulo.data });
+        
+        if(canAdd)
+        {
+            var url = "materia_id="+currSubject.id+"&nome="+titulo.data+"&descricao="+descricao.data+"&data="+calendario.data;
+            fetch(baseFecthUrl("addassunto?"+url))
+            .then(response => response.json())
+            .then(data => 
+            {
+                data.data.link = [];
+                curTopic = data.data;
+                currSubject.assuntos.push(data.data);
+                updateSessionStorage();
+                drawPage("middle_section", page_topic);
+            })
+        }
+        else
+        {
+            alert("O nome " + titulo.data + " já está sendo utilizado");
+        }
+    });
+}
+
+function page_addEvent()
 {
     new uielement_h1("middle_section", "Agendar um assunto");
     new uielement_h2("middle_section",currSubject.nome);
