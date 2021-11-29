@@ -3,14 +3,12 @@ const subjects = [];
 var curTopic = null;
 var currSubject = null;
 var user = null;
-var isLive = true;
+var isLive = false;
 
 $( document ).ready(function()
 {
     
-    // user = JSON.parse(sessionStorage.getItem("logged_user"));
-
-    user = JSON.parse('{"credentials":{"id":0,"nome":"Pedro","sobrenome":"Lourenco","email":"pedro@gmail.com","pass":"123"},"materias":[{"id":0,"nome":"Aeds","descricao":"Algoritmos e estrutura de dados","estudante_id":0,"assuntos":[{"id":0,"nome":"Somatorio","materia_guid":0,"data":"2021-11-29","desricao":"Soma em sequencia"}]},{"id":1,"nome":"Ac","descricao":"Arquitetura de computadores","estudante_id":0,"assuntos":[{"id":2,"nome":"VHDL","materia_guid":1,"data":"2021-11-27","desricao":"aa"}]},{"id":2,"nome":"Religiao","descricao":"Religiao","estudante_id":0,"assuntos":[{"id":1,"nome":"Religiao eee","materia_guid":2,"data":"2021-11-28","desricao":"aaa"}]}]}');
+    user = JSON.parse(sessionStorage.getItem("logged_user"));
 
     drawPage("middle_section", page_dashboard);
     console.log(user)
@@ -51,36 +49,38 @@ function page_login()
                 return;
             }
 
-            user = { credentials: userData.data };
+            console.log(userData);
+
+            // user = { credentials: userData.data };
             
-            fetch(baseFecthUrl("materiais?id="+userData.data.id))
-            .then(materiaisResponse => materiaisResponse.json())
-            .then(subjectData => 
-            {
-                user.materias = subjectData.data;
+            // fetch(baseFecthUrl("materiais?id="+userData.data.id))
+            // .then(materiaisResponse => materiaisResponse.json())
+            // .then(subjectData => 
+            // {
+            //     user.materias = subjectData.data;
                 
-                user.materias.forEach(materia => {
-                });  
+            //     user.materias.forEach(materia => {
+            //     });  
                 
-                var assuntosPromises = [];
+            //     var assuntosPromises = [];
 
-                user.materias.forEach(materia => 
-                    {
-                        assuntosPromises.push
-                        (
-                            fetch(baseFecthUrl("assuntos?materialid="+materia.id))
-                            .then(topicsRespose => topicsRespose.json())
-                            .then(topicsData => materia.assuntos = topicsData.data)
-                        );
-                    });
+            //     user.materias.forEach(materia => 
+            //         {
+            //             assuntosPromises.push
+            //             (
+            //                 fetch(baseFecthUrl("assuntos?materialid="+materia.id))
+            //                 .then(topicsRespose => topicsRespose.json())
+            //                 .then(topicsData => materia.assuntos = topicsData.data)
+            //             );
+            //         });
 
-                Promise.all(assuntosPromises).then(()=> 
-                { 
-                    drawPage("middle_section", page_dashboard);
-                    updateSessionStorage();
-                });
+            //     Promise.all(assuntosPromises).then(()=> 
+            //     { 
+            //         drawPage("middle_section", page_dashboard);
+            //         updateSessionStorage();
+            //     });
 
-            });
+            // });
         })
     });
 
@@ -353,7 +353,12 @@ function page_addlink(){
     var titulo = new uielement_inputfield("middle_section","Título","", "text");
     var link = new uielement_inputfield("middle_section","Link","", "text");
     new uielement_rounded_button("middle_section","Adicionar",null,()=>{
-        
+
+        if(curTopic.link == null)
+        {
+            curTopic.link = [];
+        }
+
         var canAdd = curTopic.link.every((value, index, array)=> { return value.nome != titulo.data; });
         
         if(canAdd)
