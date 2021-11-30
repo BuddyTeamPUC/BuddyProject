@@ -38,7 +38,7 @@ function page_login()
     new uielement_rounded_button("middle_section", "Login", null, ()=>
     {
         console.log(baseFecthUrl("login?username="+email.data+"&pass="+pass.data));
-        fetch(baseFecthUrl("login?username="+email.data+"&pass="+pass.data))
+        fetch(baseFecthUrl("login?username="+email.data+"&pass="+pass.data), { mode: "no-cors" })
         .then(response => response.json())
         .then(userData =>
         {
