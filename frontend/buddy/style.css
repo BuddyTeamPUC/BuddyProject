@@ -179,14 +179,14 @@ input[type=file]
 }
 body
 {
-    font-family: 'Roboto', sans-serif;
+    /* font-family: 'Roboto', sans-serif; */
     margin: 0;
     padding: 0;
     transition: 0.5s;
 }
 body.night
 {
-    background: #323437;
+    background: black;
 }
 .toggle
 {
@@ -223,16 +223,16 @@ body.night
     left: 27px;
     background: #fff;
 }
-.body
+/* .body
 {
     width: 1000px;
-}
+} */
 .body h1
 {
-    margin: 0 0 20px;
-    padding: 0;
-    color: #000;
-    transition: 0.5s;
+    /* margin: 0 0 20px; */
+    /* padding: 0; */
+    color: red;
+    /* transition: 0.5s; */
 }
 .body p
 {
@@ -240,7 +240,7 @@ body.night
     padding: 0;
     color: #000;
     transition: 0.5s;
-    font-size: 18px;
+    /* font-size: 18px; */
 }
 body.night  h1,
 body.night  p, body.night h2, body.night h3
@@ -248,10 +248,9 @@ body.night  p, body.night h2, body.night h3
     color: #fff;
 }
 body.night .rounded_button{
-    background-color: black;
+    background-color: #323437;
 }
 body.night .titled_subtitled_button{
-    background-color: black;
+    background-color: #323437;
 }
-
 

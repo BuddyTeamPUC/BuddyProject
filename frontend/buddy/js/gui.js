@@ -3,7 +3,7 @@ const subjects = [];
 var curTopic = null;
 var currSubject = null;
 var user = null;
-var isLive = true;
+var isLive = false;
 
 $( document ).ready(function()
 {
@@ -12,15 +12,33 @@ $( document ).ready(function()
 
     drawPage("middle_section", page_dashboard);
     console.log(user)
+
     $('.toggle').click(function(){
         $('.toggle').toggleClass('active')
         $('body').toggleClass('night')
+
+        var theme_id = 0;
+
+        if($(".cronometro").html() != "")
+        {
+            if($("body").hasClass("night"))
+            {
+                console.log("AAAAAAAAAAAAAA");
+                $(".cronometro").html('<iframe width="475" height="250" src="https://relogioonline.com.br/embed/cronometro/#enabled=0&msec=8315&laps=3613&theme=1&color=0" frameborder="0" allowfullscreen></iframe>');
+                $(".panel-default").css("background-color", "red");
+            }
+            else
+            {
+                $(".cronometro").html('<iframe width="475" height="250" src="https://relogioonline.com.br/embed/cronometro/#enabled=0&msec=8315&laps=3613&theme=0&color=0" frameborder="0" allowfullscreen></iframe>');
+            }
+        }
     })
 
 });
 
 function drawPage(parent, pageFunction)
 {
+    $(".cronometro").html("");
     $("."+parent).html("");
     $(".footer_section").html("");
     $(".side_section").html("");
@@ -55,36 +73,36 @@ function page_login()
 
             console.log(userData);
 
-            // user = { credentials: userData.data };
+            user = { credentials: userData.data };
             
-            // fetch(baseFecthUrl("materiais?id="+userData.data.id))
-            // .then(materiaisResponse => materiaisResponse.json())
-            // .then(subjectData => 
-            // {
-            //     user.materias = subjectData.data;
+            fetch(baseFecthUrl("materiais?id="+userData.data.id))
+            .then(materiaisResponse => materiaisResponse.json())
+            .then(subjectData => 
+            {
+                user.materias = subjectData.data;
                 
-            //     user.materias.forEach(materia => {
-            //     });  
+                user.materias.forEach(materia => {
+                });  
                 
-            //     var assuntosPromises = [];
+                var assuntosPromises = [];
 
-            //     user.materias.forEach(materia => 
-            //         {
-            //             assuntosPromises.push
-            //             (
-            //                 fetch(baseFecthUrl("assuntos?materialid="+materia.id))
-            //                 .then(topicsRespose => topicsRespose.json())
-            //                 .then(topicsData => materia.assuntos = topicsData.data)
-            //             );
-            //         });
+                user.materias.forEach(materia => 
+                    {
+                        assuntosPromises.push
+                        (
+                            fetch(baseFecthUrl("assuntos?materialid="+materia.id))
+                            .then(topicsRespose => topicsRespose.json())
+                            .then(topicsData => materia.assuntos = topicsData.data)
+                        );
+                    });
 
-            //     Promise.all(assuntosPromises).then(()=> 
-            //     { 
-            //         drawPage("middle_section", page_dashboard);
-            //         updateSessionStorage();
-            //     });
+                Promise.all(assuntosPromises).then(()=> 
+                { 
+                    drawPage("middle_section", page_dashboard);
+                    updateSessionStorage();
+                });
 
-            // });
+            });
         })
     });
 
@@ -244,15 +262,17 @@ function drawSideBar()
     }, null, { 'margin_top': '10%' } );
      //listar materias cadastradas
     new uielement_h1("side_section", "Próximos eventos: ", null, { 'margin_bottom': '-12%', 'margin_top': '15%' });
-    /* user.materias.forEach(el => {
+    user.materias.forEach(el => {
         new uielement_h3("side_section", el.nome);
+
+        if(el.eventos == null)
+            el.eventos = [];
 
         el.eventos.forEach(evento=> {
             new uielement_h4("side_section", evento.nome);
         });
 
-    }); */
-
+    });
     new uielement_rounded_button("side_section", "+ Evento", null, null, null, { 'margin_top': '20%' } );
 }
 
@@ -305,7 +325,14 @@ function page_topic(){
     new uielement_h1("middle_section",curTopic.nome, null, { 'margin_bottom': '-30px'});
     new uielement_h2("middle_section", currSubject.nome);
 
-    
+    if(!$("body").hasClass("night"))
+    {
+        $(".cronometro").html('<iframe width="475" height="250" src="https://relogioonline.com.br/embed/cronometro/#enabled=0&msec=8315&laps=3613&theme=0&color=0" frameborder="0" allowfullscreen></iframe>');
+    }
+    else
+    {
+        $(".cronometro").html('<iframe width="475" height="250" src="https://relogioonline.com.br/embed/cronometro/#enabled=0&msec=8315&laps=3613&theme=1&color=0" frameborder="0" allowfullscreen></iframe>');
+    }
     //Links úteis:
     if(curTopic.link != null && curTopic.link.length>0){
         new uielement_h2("middle_section","Links úteis:",null,);
@@ -372,9 +399,6 @@ function page_addlink(){
             .then(response => response.json())
             .then(data =>
             {
-                if(curTopic.link == null)
-                    curTopic.link = [];
-
                 curTopic.link.push(data.data); 
                 updateSessionStorage();
                 drawPage("middle_section", page_topic);
@@ -818,7 +842,7 @@ function drawDashboard(materias){
 
 function baseFecthUrl(path)
 {
-    return (!isLive) ? "http://localhost:8080/" + path : "https://pedrolourenco-test-buddy.herokuapp.com/"+path; 
+    return (!isLive) ? "http://localhost:3000/" + path : "https://pedrolourenco-test-buddy.herokuapp.com/"+path; 
 }
 
 function updateSessionStorage()
