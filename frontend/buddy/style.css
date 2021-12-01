@@ -177,3 +177,81 @@ input[type=file]
     box-shadow: 0px 2px 5px rgba(0, 0, 0, .2);
     transition: all, .2s;
 }
+body
+{
+    font-family: 'Roboto', sans-serif;
+    margin: 0;
+    padding: 0;
+    transition: 0.5s;
+}
+body.night
+{
+    background: #323437;
+}
+.toggle
+{
+    position: absolute;
+    top: 40px;
+    right: 40px;
+    background: #fff;
+    border: 1px solid #00151f;
+    width: 46px;
+    height: 20px;
+    cursor: pointer;
+    border-radius: 20px;
+    transition: 0.5s;
+}
+.toggle.active
+{
+    background: #00151f;
+    border: 1px solid #fff;
+}
+.toggle:before
+{
+    content: '';
+    position: absolute;
+    top: 1px;
+    left: 1px;
+    width: 16px;
+    height: 16px;
+    background: #00151f;
+    border-radius: 50%;
+    transition: 0.5s;
+}
+.toggle.active:before
+{
+    left: 27px;
+    background: #fff;
+}
+.body
+{
+    width: 1000px;
+}
+.body h1
+{
+    margin: 0 0 20px;
+    padding: 0;
+    color: #000;
+    transition: 0.5s;
+}
+.body p
+{
+    margin: 0;
+    padding: 0;
+    color: #000;
+    transition: 0.5s;
+    font-size: 18px;
+}
+body.night  h1,
+body.night  p, body.night h2, body.night h3
+{
+    color: #fff;
+}
+body.night .rounded_button{
+    background-color: black;
+}
+body.night .titled_subtitled_button{
+    background-color: black;
+}
+
+

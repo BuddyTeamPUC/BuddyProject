@@ -12,6 +12,10 @@ $( document ).ready(function()
 
     drawPage("middle_section", page_dashboard);
     console.log(user)
+    $('.toggle').click(function(){
+        $('.toggle').toggleClass('active')
+        $('body').toggleClass('night')
+    })
 
 });
 
