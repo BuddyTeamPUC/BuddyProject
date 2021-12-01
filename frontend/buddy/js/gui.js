@@ -3,7 +3,7 @@ const subjects = [];
 var curTopic = null;
 var currSubject = null;
 var user = null;
-var isLive = true;
+var isLive = false;
 
 $( document ).ready(function()
 {
@@ -38,7 +38,7 @@ function page_login()
     new uielement_rounded_button("middle_section", "Login", null, ()=>
     {
         console.log(baseFecthUrl("login?username="+email.data+"&pass="+pass.data));
-        fetch(baseFecthUrl("login?username="+email.data+"&pass="+pass.data), { mode: "no-cors" })
+        fetch(baseFecthUrl("login?username="+email.data+"&pass="+pass.data))
         .then(response => response.json())
         .then(userData =>
         {
@@ -51,36 +51,36 @@ function page_login()
 
             console.log(userData);
 
-            // user = { credentials: userData.data };
+             user = { credentials: userData.data };
             
-            // fetch(baseFecthUrl("materiais?id="+userData.data.id))
-            // .then(materiaisResponse => materiaisResponse.json())
-            // .then(subjectData => 
-            // {
-            //     user.materias = subjectData.data;
+            fetch(baseFecthUrl("materiais?id="+userData.data.id))
+            .then(materiaisResponse => materiaisResponse.json())
+            .then(subjectData => 
+            {
+                user.materias = subjectData.data;
                 
-            //     user.materias.forEach(materia => {
-            //     });  
+                user.materias.forEach(materia => {
+                });  
                 
-            //     var assuntosPromises = [];
+                var assuntosPromises = [];
 
-            //     user.materias.forEach(materia => 
-            //         {
-            //             assuntosPromises.push
-            //             (
-            //                 fetch(baseFecthUrl("assuntos?materialid="+materia.id))
-            //                 .then(topicsRespose => topicsRespose.json())
-            //                 .then(topicsData => materia.assuntos = topicsData.data)
-            //             );
-            //         });
+                user.materias.forEach(materia => 
+                    {
+                        assuntosPromises.push
+                        (
+                            fetch(baseFecthUrl("assuntos?materialid="+materia.id))
+                            .then(topicsRespose => topicsRespose.json())
+                            .then(topicsData => materia.assuntos = topicsData.data)
+                        );
+                    });
 
-            //     Promise.all(assuntosPromises).then(()=> 
-            //     { 
-            //         drawPage("middle_section", page_dashboard);
-            //         updateSessionStorage();
-            //     });
+                Promise.all(assuntosPromises).then(()=> 
+                { 
+                    drawPage("middle_section", page_dashboard);
+                    updateSessionStorage();
+                });
 
-            // });
+            });
         })
     });
 
@@ -240,14 +240,19 @@ function drawSideBar()
     }, null, { 'margin_top': '10%' } );
      //listar materias cadastradas
     new uielement_h1("side_section", "Próximos eventos: ", null, { 'margin_bottom': '-12%', 'margin_top': '15%' });
-    /* user.materias.forEach(el => {
+     user.materias.forEach(el => {
         new uielement_h3("side_section", el.nome);
+
+        if(el.eventos == null)
+        {
+            el.eventos = [];
+        }
 
         el.eventos.forEach(evento=> {
             new uielement_h4("side_section", evento.nome);
         });
 
-    }); */
+    });
 
     new uielement_rounded_button("side_section", "+ Evento", null, null, null, { 'margin_top': '20%' } );
 }
@@ -814,7 +819,7 @@ function drawDashboard(materias){
 
 function baseFecthUrl(path)
 {
-    return (!isLive) ? "http://localhost:8080/" + path : "https://pedrolourenco-test-buddy.herokuapp.com/"+path; 
+    return (!isLive) ? "http://localhost:3000/" + path : "https://pedrolourenco-test-buddy.herokuapp.com/"+path; 
 }
 
 function updateSessionStorage()
