@@ -151,7 +151,7 @@ function page_register()
 
         var url = baseFecthUrl("register?name="+nome.data+"&sobrenome="+sobrenome.data+"&email="+email.data+"&pass="+pass.data);
         console.log(url);
-        fetch(url)
+        fetch(url, { method: 'POST' })
         .then(json => json.json())
         .then(final => 
         {
@@ -271,7 +271,7 @@ function page_create()
             if(canAdd)
             {
                 var url = "user_id="+user.credentials.id+"&nome="+nome_mat.data+"&descricao="+descricao_mat.data;
-                fetch(baseFecthUrl("addmateria?"+url))
+                fetch(baseFecthUrl("addmateria?"+url), { method: 'POST' })
                 .then(response => response.json())
                 .then(data => 
                     {
@@ -369,7 +369,7 @@ function page_addlink(){
         if(canAdd)
         {
             var url = baseFecthUrl("/addlink?assunto_id="+curTopic.id+"&titulo="+titulo.data+"&link="+link.data);
-            fetch(url)
+            fetch(url, { method: 'POST' })
             .then(response => response.json())
             .then(data =>
             {
@@ -406,7 +406,7 @@ function page_addAssunto()
         if(canAdd)
         {
             var url = "materia_id="+currSubject.id+"&nome="+titulo.data+"&descricao="+descricao.data+"&data="+calendario.data;
-            fetch(baseFecthUrl("addassunto?"+url))
+            fetch(baseFecthUrl("addassunto?"+url), { method: 'POST' })
             .then(response => response.json())
             .then(data => 
             {
@@ -442,7 +442,7 @@ function page_addEvent()
         if(canAdd)
         {
             var url = "materia_id="+currSubject.id+"&nome="+titulo.data+"&descricao="+descricao.data+"&data="+calendario.data;
-            fetch(baseFecthUrl("addassunto?"+url))
+            fetch(baseFecthUrl("addassunto?"+url), { method: 'POST' })
             .then(response => response.json())
             .then(data => 
             {
