@@ -107,7 +107,7 @@ function page_login()
     });
 
     new uielement_h2("middle_section", "Não tem uma conta ?", null, { "margin_top": "45px", "margin_bottom": "-20px" });
-    var criar = new uielement_h3("middle_section", "cirar", null);
+    var criar = new uielement_h3("middle_section", "criar", null);
  
     criar.addEvent("mouseenter", ()=>
     {
@@ -262,18 +262,21 @@ function drawSideBar()
     }, null, { 'margin_top': '10%' } );
      //listar materias cadastradas
     new uielement_h1("side_section", "Próximos eventos: ", null, { 'margin_bottom': '-12%', 'margin_top': '15%' });
-    user.materias.forEach(el => {
-        new uielement_h3("side_section", el.nome);
+    // user.materias.forEach(el => {
+    //     new uielement_h3("side_section", el.nome);
 
-        if(el.eventos == null)
-            el.eventos = [];
+    //     if(el.eventos == null)
+    //         el.eventos = [];
 
-        el.eventos.forEach(evento=> {
-            new uielement_h4("side_section", evento.nome);
-        });
+    //     el.eventos.forEach(evento=> {
+    //         new uielement_h4("side_section", evento.nome);
+    //     });
 
-    });
-    new uielement_rounded_button("side_section", "+ Evento", null, null, null, { 'margin_top': '20%' } );
+    // });
+    new uielement_rounded_button("side_section", "+ Evento", null, ()=>
+    {
+        drawPage("middle_section", page_addEvent);
+    }, null, { 'margin_top': '20%' } );
 }
 
 // MILENA
@@ -450,7 +453,6 @@ function page_addAssunto()
 function page_addEvent()
 {
     new uielement_h1("middle_section", "Agendar um evento");
-    new uielement_h2("middle_section",currSubject.nome);
     var titulo = new uielement_inputfield("middle_section","Título","", "text");
     var descricao = new uielement_inputfield("middle_section","Descrição","", "text");
     var calendario = new uielement_calendar("middle_section", "", ()=>
@@ -460,26 +462,10 @@ function page_addEvent()
     
     new uielement_rounded_button("middle_section","Adicionar",null,()=>{
         
-        var canAdd = currSubject.assuntos.every((assunto, index, array)=> { return assunto.nome != titulo.data });
-        
-        if(canAdd)
-        {
-            var url = "materia_id="+currSubject.id+"&nome="+titulo.data+"&descricao="+descricao.data+"&data="+calendario.data;
-            fetch(baseFecthUrl("addassunto?"+url))
-            .then(response => response.json())
-            .then(data => 
-            {
-                data.data.link = [];
-                curTopic = data.data;
-                currSubject.assuntos.push(data.data);
-                updateSessionStorage();
-                drawPage("middle_section", page_topic);
-            })
-        }
-        else
-        {
-            alert("O nome " + titulo.data + " já está sendo utilizado");
-        }
+        var url = baseFecthUrl("/user="+user.credentials.id+"&addevent?nome="+titulo.data+"&descricao="+descricao.data+"&data="+calendario.data);
+        fetch(url)
+        .then(response => response.json())
+        .then(data => {console.log(data)})
     });
 }
 
