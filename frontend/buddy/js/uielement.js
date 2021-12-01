@@ -350,3 +350,26 @@ class uielement_calendar extends uielement
         this.setStyle(this.style);
     }
 }
+
+class uielement_DropDown extends uielement
+{
+    constructor(parent, data, onDataChanged, style, options)
+    {
+        super(parent, data, onDataChanged, style, options);
+        this.tag = "select";
+        $("."+parent).append("<div class='"+this.itemClass+"'></div>");
+        this.draw(data);
+
+    }
+
+    draw(data)
+    {
+        this.html = '<'+this.tag+' class="'+this.tag+'_'+this.id+'" ></'+this.tag+'>';
+        $("."+this.id).html(this.html);
+        data.forEach(el =>{
+            $("."+ this.tag+'_'+this.id).append("<option value = '"+el+"'>" + el + "</option>"); 
+            })
+    }
+
+}
+

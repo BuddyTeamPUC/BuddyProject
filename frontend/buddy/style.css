@@ -256,4 +256,15 @@ body.night .rounded_button{
 body.night .titled_subtitled_button{
     background-color: #323437;
 }
+select{
+
+    min-width: 350px;
+    border: none;
+    border-bottom: 2px solid #008a5e;
+    padding-top: 35px;
+    padding-bottom: 5px;
+    background-color: #fafafa;
+    font-size: 20px;
+    transition: all, .2s;  
+}
 
