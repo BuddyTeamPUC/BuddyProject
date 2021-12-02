@@ -213,8 +213,29 @@ function page_dashboard()
     new uielement_h1("middle_section", "Olá, "+ user.credentials.nome, null, { 'margin_bottom': '-2%' });
     new uielement_h2("middle_section", "Vai revisar alguma coisa hoje ?");
     }else{
+
+        var voltar = new uielement_h3("middle_section","< Voltar");
+        voltar.addEvent("mouseenter", ()=>{
+            voltar.style = {
+                "text_decoration" : "underline", 
+                "cursor" : "pointer"
+            }
+            voltar.setStyle()
+        });
+        voltar.addEvent("mouseleave", ()=>{
+            voltar.style = {
+                "text_decoration" : "normal", 
+                "cursor" : "normal"
+            }
+            voltar.setStyle()
+        });
+        voltar.addEvent("click", ()=>{
+            currSubject = null;
+            drawPage("middle_section", page_dashboard);
+        });
+
         materiasParaMostrar.push(currSubject);
-        new uielement_h1("middle_section", currSubject.nome);
+        new uielement_h1("middle_section", currSubject.nome, null, { "margin_top" : "-30px" });
         new uielement_h2("middle_section", currSubject.descricao, null, { "margin_top" : "-30px" } );
     }
     
@@ -464,6 +485,7 @@ function page_addEvent()
     
     var materias = ["nome", "nome2"];
     new uielement_DropDown("middle_section", materias);
+    new uielement_CheckBox("middle_section", "check", "olas", null, null);
     new uielement_rounded_button("middle_section","Adicionar",null,()=>{
         
         var url = baseFecthUrl("/user="+user.credentials.id+"&addevent?nome="+titulo.data+"&descricao="+descricao.data+"&data="+calendario.data);
