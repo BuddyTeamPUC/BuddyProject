@@ -3,7 +3,7 @@ const subjects = [];
 var curTopic = null;
 var currSubject = null;
 var user = null;
-var isLive = false;
+var isLive = true;
 
 $( document ).ready(function()
 {
