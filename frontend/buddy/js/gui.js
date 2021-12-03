@@ -3,17 +3,14 @@ const subjects = [];
 var curTopic = null;
 var currSubject = null;
 var user = null;
-var isLive = true;
+var isLive = false;
 
 $( document ).ready(function()
 {
     
     user = JSON.parse(sessionStorage.getItem("logged_user"));
-    // user = JSON.parse('{"credentials":{"id":0,"nome":"Pedro","sobrenome":"Lourenco","email":"pedro@gmail.com","pass":"123"},"materias":[{"id":0,"nome":"Aeds","descricao":"Algoritmos e estrutura de dados","estudante_id":0,"assuntos":[{"id":0,"nome":"Somatorio","materia_guid":0,"data":"2021-11-29","desricao":"Soma em sequencia"}]},{"id":1,"nome":"Ac","descricao":"Arquitetura de computadores","estudante_id":0,"assuntos":[{"id":2,"nome":"VHDL","materia_guid":1,"data":"2021-11-27","desricao":"aa"}]},{"id":2,"nome":"Religiao","descricao":"Religiao","estudante_id":0,"assuntos":[{"id":1,"nome":"Religiao eee","materia_guid":2,"data":"2021-11-28","desricao":"aaa"}]}]}');
-
 
     drawPage("middle_section", page_login);
-    console.log(user)
 
     $('.toggle').click(function(){
         $('.toggle').toggleClass('active')
@@ -25,7 +22,6 @@ $( document ).ready(function()
         {
             if($("body").hasClass("night"))
             {
-                console.log("AAAAAAAAAAAAAA");
                 $(".cronometro").html('<iframe width="475" height="250" src="https://relogioonline.com.br/embed/cronometro/#enabled=0&msec=8315&laps=3613&theme=1&color=0" frameborder="0" allowfullscreen></iframe>');
                 $(".panel-default").css("background-color", "red");
             }
@@ -53,9 +49,21 @@ function drawPage(parent, pageFunction)
 
 function page_login()
 {
-    new uielement_h1("middle_section", "Login");
-    var email = new uielement_inputfield("middle_section", "email", "", "text");
-    var pass = new uielement_inputfield("middle_section", "senha", "", "password");
+
+    if(user != null)
+    {
+        drawPage("middle_section", page_dashboard);
+        return;
+    }
+
+    displaySideBar(false);
+
+    var centerStyle = { "margin_left": "-15%" } 
+
+    new uielement_h1("middle_section", "Login", null, centerStyle);
+
+    var email = new uielement_inputfield("middle_section", "email", "", "text", null, centerStyle);
+    var pass = new uielement_inputfield("middle_section", "senha", "", "password", null, centerStyle);
 
     pass.addAttribute("type", "password");
 
@@ -106,10 +114,10 @@ function page_login()
 
             });
         })
-    });
+    }, null, centerStyle);
 
-    new uielement_h2("middle_section", "Não tem uma conta ?", null, { "margin_top": "45px", "margin_bottom": "-20px" });
-    var criar = new uielement_h3("middle_section", "criar", null);
+    new uielement_h2("middle_section", "Não tem uma conta ?", null, { "margin_top": "45px", "margin_bottom": "-20px", "margin_left" : "-15%" });
+    var criar = new uielement_h3("middle_section", "criar", null, centerStyle);
  
     criar.addEvent("mouseenter", ()=>
     {
@@ -141,13 +149,16 @@ function page_login()
 
 function page_register()
 {
-    new uielement_h1("middle_section", "Login");
 
-    var nome = new uielement_inputfield("middle_section", "nome", "", "text");
-    var sobrenome = new uielement_inputfield("middle_section", "sobrenome", "", "text");
-    var email = new uielement_inputfield("middle_section", "email", "", "text");
-    var pass = new uielement_inputfield("middle_section", "senha", "", "password");
-    var confirmpass = new uielement_inputfield("middle_section", "confirmar senha", "", "password");
+    var centerStyle = { "margin_left": "-15%" } 
+
+    new uielement_h1("middle_section", "Login", null, centerStyle);
+
+    var nome = new uielement_inputfield("middle_section", "nome", "", "text", null, centerStyle);
+    var sobrenome = new uielement_inputfield("middle_section", "sobrenome", "", "text", null, centerStyle);
+    var email = new uielement_inputfield("middle_section", "email", "", "text", null, centerStyle);
+    var pass = new uielement_inputfield("middle_section", "senha", "", "password", null, centerStyle);
+    var confirmpass = new uielement_inputfield("middle_section", "confirmar senha", "", "password", null, centerStyle);
 
     pass.addAttribute("type", "password");
     confirmpass.addAttribute("type", "password");
@@ -189,13 +200,16 @@ function page_register()
             drawPage("middle_section", page_login);
         });
         // drawDashboard("middle_section", page_login);
-    });
+    }, null, centerStyle);
 }
 
 // JULIA
 
 function page_dashboard()
 {
+
+
+    displaySideBar(true);
     
     //Antes de desenhar a dashboard o site precisa sertificar de que o usuário está carregado.
     if(!user)
@@ -320,7 +334,6 @@ function page_create()
                 .then(response => response.json())
                 .then(data => 
                     {
-                        console.log(user);
                         currSubject = data.data;
                         console.log(data.data);
                         currSubject = data.data;
@@ -443,10 +456,7 @@ function page_addAssunto()
     new uielement_h2("middle_section",currSubject.nome);
     var titulo = new uielement_inputfield("middle_section","Título","", "text");
     var descricao = new uielement_inputfield("middle_section","Descrição","", "text");
-    var calendario = new uielement_calendar("middle_section", "", ()=>
-    {
-        console.log("teste");
-    });
+    var calendario = new uielement_calendar("middle_section", "");
     
     new uielement_rounded_button("middle_section","Adicionar",null,()=>{
         
@@ -478,10 +488,7 @@ function page_addEvent()
     new uielement_h1("middle_section", "Agendar um evento");
     var titulo = new uielement_inputfield("middle_section","Título","", "text");
     var descricao = new uielement_inputfield("middle_section","Descrição","", "text");
-    var calendario = new uielement_calendar("middle_section", "", ()=>
-    {
-        console.log("teste");
-    });
+    var calendario = new uielement_calendar("middle_section", "");
     
     var materias = ["nome", "nome2"];
     new uielement_DropDown("middle_section", materias);
@@ -523,12 +530,6 @@ function drawDashboard(materias){
 
     //criar um array com todas as datas cadastradas sem repeticoes
     var dates = [];
-    
-    for(const elM of materias)
-    {
-        console.log("elM");
-        console.log(elM);
-    }
     
     materias.forEach(elM => {
         
@@ -865,3 +866,56 @@ function updateSessionStorage()
 function isEmpty(str) {
     return (!str || str.length === 0 );
 }
+
+function displaySideBar(value)
+{
+    $(".side_section").css("display", (value == true) ? "block" : "none");
+}
+
+function decodeSpecialChar(s) {
+    var toReturn = s;
+
+    for(var t of toReturn)
+    {
+        toReturn = toReturn.replace("%c1", "Á");
+        toReturn = toReturn.replace("%c2", "Â");
+        toReturn = toReturn.replace("%c3", "Ã");
+        toReturn = toReturn.replace("%e0", "à");
+        toReturn = toReturn.replace("%e1", "á");
+        toReturn = toReturn.replace("%e2", "â");
+        toReturn = toReturn.replace("%e3", "ã");
+
+        toReturn = toReturn.replace("%C8", "È");
+        toReturn = toReturn.replace("%c9", "É");
+        toReturn = toReturn.replace("%ca", "Ê");
+        toReturn = toReturn.replace("%e8", "è");
+        toReturn = toReturn.replace("%e9", "é");
+        toReturn = toReturn.replace("%ea", "ê");
+        
+        toReturn = toReturn.replace("%cc", "Ì");
+        toReturn = toReturn.replace("%cd", "Í");
+        toReturn = toReturn.replace("%ce", "Î");
+        toReturn = toReturn.replace("%ec", "ì");
+        toReturn = toReturn.replace("%ed", "í");
+        toReturn = toReturn.replace("%ee", "î");
+        
+        toReturn = toReturn.replace("%d2", "Ò");
+        toReturn = toReturn.replace("%d3", "Ó");
+        toReturn = toReturn.replace("%d4", "Ô");
+        toReturn = toReturn.replace("%d5", "Õ");
+        toReturn = toReturn.replace("%f2", "ò");
+        toReturn = toReturn.replace("%f3", "ó");
+        toReturn = toReturn.replace("%f4", "ô");
+        toReturn = toReturn.replace("%f5", "õ");
+        
+        toReturn = toReturn.replace("%d9", "Ù");
+        toReturn = toReturn.replace("%da", "Ú");
+        toReturn = toReturn.replace("%f9", "ù");
+        toReturn = toReturn.replace("%fb", "ú");
+
+        toReturn = toReturn.replace("%c7", "Ç");
+        toReturn = toReturn.replace("%e7", "ç");
+    };
+
+    return toReturn;
+  }

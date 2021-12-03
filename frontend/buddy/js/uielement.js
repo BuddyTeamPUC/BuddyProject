@@ -166,7 +166,7 @@ class uielement_h1 extends uielement
         super(parent, data, onDataChanged, style);
         this.tag = "h1";
         $("."+parent).append("<div class='"+this.itemClass+"'></div>");
-        this.draw(data);
+        this.draw(decodeSpecialChar(data));
     }
 }
 
@@ -177,7 +177,7 @@ class uielement_h2 extends uielement
         super(parent, data, onDataChanged, style);
         this.tag = "h2";
         $("."+parent).append("<div class='"+this.itemClass+"'></div>");
-        this.draw(data);
+        this.draw(decodeSpecialChar(data));
     }
 }
 
@@ -188,7 +188,7 @@ class uielement_h3 extends uielement
         super(parent, data, onDataChanged, style);
         this.tag = "h3";
         $("."+parent).append("<div class='"+this.itemClass+"'></div>");
-        this.redraw = this.draw(data);
+        this.redraw = this.draw(decodeSpecialChar (data));
     }
 }
 
@@ -220,9 +220,9 @@ class uielement_titled_subtitled_button extends uielement
         $("."+parent).append("<div class='"+this.itemClass+"'></div>");
         this.draw
         (
-            "<h3>"+this.buttonLabel+"</h3>" +
-            "<h3>"+this.buttonSubtitle+"</h3>"
-            );
+            "<h3>"+decodeSpecialChar( this.buttonLabel )+"</h3>" +
+            "<h3>"+decodeSpecialChar( this.buttonSubtitle )+"</h3>"
+        );
         
             this.addClass("titled_subtitled_button");
             
@@ -239,7 +239,7 @@ class uielement_rounded_button extends uielement
         this.tag = "button";
         
         $("."+parent).append("<div class='"+this.itemClass+"'></div>");
-        this.draw("<h3>"+this.buttonLabel+"</h3>");
+        this.draw("<h3>"+decodeSpecialChar(this.buttonLabel)+"</h3>");
         
         this.addClass("rounded_button");
         
@@ -317,7 +317,7 @@ class uielement_h3_hyperlink extends uielement_h3
         
     }
     draw(data){
-        super.draw(data);
+        super.draw(decodeSpecialChar( data ));
         this.addAttribute("style","display : inline-block");
         $("."+ this.id).append("<img src='../img/external_link_icon.svg' width= 18px style= 'padding-left : 4px; margin-top : 50px'>");
     }
