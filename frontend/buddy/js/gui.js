@@ -8,11 +8,11 @@ var isLive = false;
 $( document ).ready(function()
 {
     
-    //user = JSON.parse(sessionStorage.getItem("logged_user"));
-    user = JSON.parse('{"credentials":{"id":0,"nome":"Pedro","sobrenome":"Lourenco","email":"pedro@gmail.com","pass":"123"},"materias":[{"id":0,"nome":"Aeds","descricao":"Algoritmos e estrutura de dados","estudante_id":0,"assuntos":[{"id":0,"nome":"Somatorio","materia_guid":0,"data":"2021-11-29","desricao":"Soma em sequencia"}]},{"id":1,"nome":"Ac","descricao":"Arquitetura de computadores","estudante_id":0,"assuntos":[{"id":2,"nome":"VHDL","materia_guid":1,"data":"2021-11-27","desricao":"aa"}]},{"id":2,"nome":"Religiao","descricao":"Religiao","estudante_id":0,"assuntos":[{"id":1,"nome":"Religiao eee","materia_guid":2,"data":"2021-11-28","desricao":"aaa"}]}]}');
+    user = JSON.parse(sessionStorage.getItem("logged_user"));
+    // user = JSON.parse('{"credentials":{"id":0,"nome":"Pedro","sobrenome":"Lourenco","email":"pedro@gmail.com","pass":"123"},"materias":[{"id":0,"nome":"Aeds","descricao":"Algoritmos e estrutura de dados","estudante_id":0,"assuntos":[{"id":0,"nome":"Somatorio","materia_guid":0,"data":"2021-11-29","desricao":"Soma em sequencia"}]},{"id":1,"nome":"Ac","descricao":"Arquitetura de computadores","estudante_id":0,"assuntos":[{"id":2,"nome":"VHDL","materia_guid":1,"data":"2021-11-27","desricao":"aa"}]},{"id":2,"nome":"Religiao","descricao":"Religiao","estudante_id":0,"assuntos":[{"id":1,"nome":"Religiao eee","materia_guid":2,"data":"2021-11-28","desricao":"aaa"}]}]}');
 
 
-    drawPage("middle_section", page_addEvent);
+    drawPage("middle_section", page_login);
     console.log(user)
 
     $('.toggle').click(function(){
