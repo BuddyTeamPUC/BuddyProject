@@ -298,7 +298,7 @@ function drawSideBar()
         drawPage("middle_section", page_create);
     }, null, { 'margin_top': '10%' } );
      //listar materias cadastradas
-    new uielement_h1("side_section", "Próximos eventos: ", null, { 'margin_bottom': '-12%', 'margin_top': '15%' });
+    // new uielement_h1("side_section", "Próximos eventos: ", null, { 'margin_bottom': '-12%', 'margin_top': '15%' });
     // user.materias.forEach(el => {
     //     new uielement_h3("side_section", el.nome);
 
@@ -310,10 +310,10 @@ function drawSideBar()
     //     });
 
     // });
-    new uielement_rounded_button("side_section", "+ Evento", null, ()=>
-    {
-        drawPage("middle_section", page_addEvent);
-    }, null, { 'margin_top': '20%' } );
+    // new uielement_rounded_button("side_section", "+ Evento", null, ()=>
+    // {
+    //     drawPage("middle_section", page_addEvent);
+    // }, null, { 'margin_top': '20%' } );
 }
 
 // MILENA
@@ -483,6 +483,27 @@ function page_addAssunto()
     });
 }
 
+function addTopicsCheckbox(subjectName)
+{
+
+    var addedCheckbox = [];
+
+    console.log(subjectName);
+
+    user.materias.forEach(mat =>
+    {
+        if(decodeSpecialChar( mat.nome ) == subjectName)
+        {
+            mat.assuntos.forEach(ass => 
+            {
+                addedCheckbox.push( new uielement_CheckBox("middle_section", "check", ass.nome , null, null) );
+            });
+        }
+    });
+    
+    return addedCheckbox;
+}
+
 function page_addEvent()
 {
     new uielement_h1("middle_section", "Agendar um evento");
@@ -490,9 +511,24 @@ function page_addEvent()
     var descricao = new uielement_inputfield("middle_section","Descrição","", "text");
     var calendario = new uielement_calendar("middle_section", "");
     
-    var materias = ["nome", "nome2"];
-    new uielement_DropDown("middle_section", materias);
-    new uielement_CheckBox("middle_section", "check", "olas", null, null);
+    var nomes = [];
+    var addTopics = addTopicsCheckbox();
+
+    user.materias.forEach(mat => 
+    {
+        nomes.push( decodeSpecialChar( mat.nome ));
+    });
+
+    new uielement_DropDown("middle_section", nomes, (selectedSubject)=>
+    { 
+        for(var _topic in addTopics)
+        {
+            _topic.clear();
+        }
+
+        addTopicsCheckbox(selectedSubject);
+    });
+
     new uielement_rounded_button("middle_section","Adicionar",null,()=>{
         
         var url = baseFecthUrl("/user="+user.credentials.id+"&addevent?nome="+titulo.data+"&descricao="+descricao.data+"&data="+calendario.data);
