@@ -3,20 +3,44 @@ const subjects = [];
 var curTopic = null;
 var currSubject = null;
 var user = null;
-var isLive = true;
+var isLive = false;
 
 $( document ).ready(function()
 {
     
     user = JSON.parse(sessionStorage.getItem("logged_user"));
+    // user = JSON.parse('{"credentials":{"id":0,"nome":"Pedro","sobrenome":"Lourenco","email":"pedro@gmail.com","pass":"123"},"materias":[{"id":0,"nome":"Aeds","descricao":"Algoritmos e estrutura de dados","estudante_id":0,"assuntos":[{"id":0,"nome":"Somatorio","materia_guid":0,"data":"2021-11-29","desricao":"Soma em sequencia"}]},{"id":1,"nome":"Ac","descricao":"Arquitetura de computadores","estudante_id":0,"assuntos":[{"id":2,"nome":"VHDL","materia_guid":1,"data":"2021-11-27","desricao":"aa"}]},{"id":2,"nome":"Religiao","descricao":"Religiao","estudante_id":0,"assuntos":[{"id":1,"nome":"Religiao eee","materia_guid":2,"data":"2021-11-28","desricao":"aaa"}]}]}');
 
-    drawPage("middle_section", page_dashboard);
+
+    drawPage("middle_section", page_login);
     console.log(user)
+
+    $('.toggle').click(function(){
+        $('.toggle').toggleClass('active')
+        $('body').toggleClass('night')
+
+        var theme_id = 0;
+
+        if($(".cronometro").html() != "")
+        {
+            if($("body").hasClass("night"))
+            {
+                console.log("AAAAAAAAAAAAAA");
+                $(".cronometro").html('<iframe width="475" height="250" src="https://relogioonline.com.br/embed/cronometro/#enabled=0&msec=8315&laps=3613&theme=1&color=0" frameborder="0" allowfullscreen></iframe>');
+                $(".panel-default").css("background-color", "red");
+            }
+            else
+            {
+                $(".cronometro").html('<iframe width="475" height="250" src="https://relogioonline.com.br/embed/cronometro/#enabled=0&msec=8315&laps=3613&theme=0&color=0" frameborder="0" allowfullscreen></iframe>');
+            }
+        }
+    })
 
 });
 
 function drawPage(parent, pageFunction)
 {
+    $(".cronometro").html("");
     $("."+parent).html("");
     $(".footer_section").html("");
     $(".side_section").html("");
@@ -51,7 +75,7 @@ function page_login()
 
             console.log(userData);
 
-             user = { credentials: userData.data };
+            user = { credentials: userData.data };
             
             fetch(baseFecthUrl("materiais?id="+userData.data.id))
             .then(materiaisResponse => materiaisResponse.json())
@@ -85,7 +109,7 @@ function page_login()
     });
 
     new uielement_h2("middle_section", "Não tem uma conta ?", null, { "margin_top": "45px", "margin_bottom": "-20px" });
-    var criar = new uielement_h3("middle_section", "cirar", null);
+    var criar = new uielement_h3("middle_section", "criar", null);
  
     criar.addEvent("mouseenter", ()=>
     {
@@ -151,7 +175,7 @@ function page_register()
 
         var url = baseFecthUrl("register?name="+nome.data+"&sobrenome="+sobrenome.data+"&email="+email.data+"&pass="+pass.data);
         console.log(url);
-        fetch(url, { method: 'POST' })
+        fetch(url)
         .then(json => json.json())
         .then(final => 
         {
@@ -189,8 +213,29 @@ function page_dashboard()
     new uielement_h1("middle_section", "Olá, "+ user.credentials.nome, null, { 'margin_bottom': '-2%' });
     new uielement_h2("middle_section", "Vai revisar alguma coisa hoje ?");
     }else{
+
+        var voltar = new uielement_h3("middle_section","< Voltar");
+        voltar.addEvent("mouseenter", ()=>{
+            voltar.style = {
+                "text_decoration" : "underline", 
+                "cursor" : "pointer"
+            }
+            voltar.setStyle()
+        });
+        voltar.addEvent("mouseleave", ()=>{
+            voltar.style = {
+                "text_decoration" : "normal", 
+                "cursor" : "normal"
+            }
+            voltar.setStyle()
+        });
+        voltar.addEvent("click", ()=>{
+            currSubject = null;
+            drawPage("middle_section", page_dashboard);
+        });
+
         materiasParaMostrar.push(currSubject);
-        new uielement_h1("middle_section", currSubject.nome);
+        new uielement_h1("middle_section", currSubject.nome, null, { "margin_top" : "-30px" });
         new uielement_h2("middle_section", currSubject.descricao, null, { "margin_top" : "-30px" } );
     }
     
@@ -240,21 +285,21 @@ function drawSideBar()
     }, null, { 'margin_top': '10%' } );
      //listar materias cadastradas
     new uielement_h1("side_section", "Próximos eventos: ", null, { 'margin_bottom': '-12%', 'margin_top': '15%' });
-     user.materias.forEach(el => {
-        new uielement_h3("side_section", el.nome);
+    // user.materias.forEach(el => {
+    //     new uielement_h3("side_section", el.nome);
 
-        if(el.eventos == null)
-        {
-            el.eventos = [];
-        }
+    //     if(el.eventos == null)
+    //         el.eventos = [];
 
-        el.eventos.forEach(evento=> {
-            new uielement_h4("side_section", evento.nome);
-        });
+    //     el.eventos.forEach(evento=> {
+    //         new uielement_h4("side_section", evento.nome);
+    //     });
 
-    });
-
-    new uielement_rounded_button("side_section", "+ Evento", null, null, null, { 'margin_top': '20%' } );
+    // });
+    new uielement_rounded_button("side_section", "+ Evento", null, ()=>
+    {
+        drawPage("middle_section", page_addEvent);
+    }, null, { 'margin_top': '20%' } );
 }
 
 // MILENA
@@ -271,7 +316,7 @@ function page_create()
             if(canAdd)
             {
                 var url = "user_id="+user.credentials.id+"&nome="+nome_mat.data+"&descricao="+descricao_mat.data;
-                fetch(baseFecthUrl("addmateria?"+url), { method: 'POST' })
+                fetch(baseFecthUrl("addmateria?"+url))
                 .then(response => response.json())
                 .then(data => 
                     {
@@ -306,7 +351,14 @@ function page_topic(){
     new uielement_h1("middle_section",curTopic.nome, null, { 'margin_bottom': '-30px'});
     new uielement_h2("middle_section", currSubject.nome);
 
-    
+    if(!$("body").hasClass("night"))
+    {
+        $(".cronometro").html('<iframe width="475" height="250" src="https://relogioonline.com.br/embed/cronometro/#enabled=0&msec=8315&laps=3613&theme=0&color=0" frameborder="0" allowfullscreen></iframe>');
+    }
+    else
+    {
+        $(".cronometro").html('<iframe width="475" height="250" src="https://relogioonline.com.br/embed/cronometro/#enabled=0&msec=8315&laps=3613&theme=1&color=0" frameborder="0" allowfullscreen></iframe>');
+    }
     //Links úteis:
     if(curTopic.link != null && curTopic.link.length>0){
         new uielement_h2("middle_section","Links úteis:",null,);
@@ -369,13 +421,10 @@ function page_addlink(){
         if(canAdd)
         {
             var url = baseFecthUrl("/addlink?assunto_id="+curTopic.id+"&titulo="+titulo.data+"&link="+link.data);
-            fetch(url, { method: 'POST' })
+            fetch(url)
             .then(response => response.json())
             .then(data =>
             {
-                if(curTopic.link == null)
-                    curTopic.link = [];
-
                 curTopic.link.push(data.data); 
                 updateSessionStorage();
                 drawPage("middle_section", page_topic);
@@ -406,7 +455,7 @@ function page_addAssunto()
         if(canAdd)
         {
             var url = "materia_id="+currSubject.id+"&nome="+titulo.data+"&descricao="+descricao.data+"&data="+calendario.data;
-            fetch(baseFecthUrl("addassunto?"+url), { method: 'POST' })
+            fetch(baseFecthUrl("addassunto?"+url))
             .then(response => response.json())
             .then(data => 
             {
@@ -427,7 +476,6 @@ function page_addAssunto()
 function page_addEvent()
 {
     new uielement_h1("middle_section", "Agendar um evento");
-    new uielement_h2("middle_section",currSubject.nome);
     var titulo = new uielement_inputfield("middle_section","Título","", "text");
     var descricao = new uielement_inputfield("middle_section","Descrição","", "text");
     var calendario = new uielement_calendar("middle_section", "", ()=>
@@ -435,28 +483,15 @@ function page_addEvent()
         console.log("teste");
     });
     
+    var materias = ["nome", "nome2"];
+    new uielement_DropDown("middle_section", materias);
+    new uielement_CheckBox("middle_section", "check", "olas", null, null);
     new uielement_rounded_button("middle_section","Adicionar",null,()=>{
         
-        var canAdd = currSubject.assuntos.every((assunto, index, array)=> { return assunto.nome != titulo.data });
-        
-        if(canAdd)
-        {
-            var url = "materia_id="+currSubject.id+"&nome="+titulo.data+"&descricao="+descricao.data+"&data="+calendario.data;
-            fetch(baseFecthUrl("addassunto?"+url), { method: 'POST' })
-            .then(response => response.json())
-            .then(data => 
-            {
-                data.data.link = [];
-                curTopic = data.data;
-                currSubject.assuntos.push(data.data);
-                updateSessionStorage();
-                drawPage("middle_section", page_topic);
-            })
-        }
-        else
-        {
-            alert("O nome " + titulo.data + " já está sendo utilizado");
-        }
+        var url = baseFecthUrl("/user="+user.credentials.id+"&addevent?nome="+titulo.data+"&descricao="+descricao.data+"&data="+calendario.data);
+        fetch(url)
+        .then(response => response.json())
+        .then(data => {console.log(data)})
     });
 }
 

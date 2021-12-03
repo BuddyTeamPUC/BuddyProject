@@ -350,3 +350,51 @@ class uielement_calendar extends uielement
         this.setStyle(this.style);
     }
 }
+
+class uielement_DropDown extends uielement
+{
+    constructor(parent, data, onDataChanged, style, options)
+    {
+        super(parent, data, onDataChanged, style, options);
+        this.tag = "select";
+        $("."+parent).append("<div class='"+this.itemClass+"'></div>");
+        this.draw(data);
+
+    }
+
+    draw(data)
+    {
+        this.html = '<'+this.tag+' class="'+this.tag+'_'+this.id+'" ></'+this.tag+'>';
+        $("."+this.id).html(this.html);
+        data.forEach(el =>{
+            $("."+ this.tag+'_'+this.id).append("<option value = '"+el+"'>" + el + "</option>"); 
+            })
+    }
+
+}
+
+class uielement_CheckBox extends uielement
+{
+    constructor(parent, _placeholder, data, _onDataChanged, style)
+    {
+        super(parent, data, _onDataChanged, style);
+        this.placeholder = _placeholder;
+        this.tag = "input";
+        this.type = "checkbox";
+        
+        $("."+parent).append("<div class='"+this.itemClass+"'></div>");
+        
+        this.draw();
+    }
+    
+    draw()
+    {   
+        this.html = '<'+this.tag+' class="'+this.tag+'_'+this.id+'" name="'+this.data+'"></'+this.tag+'>  <label for"'+this.id+'">'+this.data+'</label>';
+        $("."+this.id).html(this.html);
+        this.addAttribute("type", this.type);
+        this.setStyle(this.style);
+        
+    }
+
+    
+}
